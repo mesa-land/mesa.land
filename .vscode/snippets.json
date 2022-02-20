@@ -1,0 +1,7 @@
+{
+  "html": {
+    "snippets": {
+      "tw": "[class={tw`${1}`}]"
+    }
+  }
+}

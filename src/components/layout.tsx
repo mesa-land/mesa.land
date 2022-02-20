@@ -8,8 +8,11 @@ export interface State {
 }
 
 export const Layout = (props: State) => (
-  <div class={tw`bg-green-50 bg-opacity-50 p-4 rounded-lg border-solid border-2 border-purple-100 border-opacity-50 visited:text-green-600`}>
-    <h1>Mesa.land</h1>
+  <div class={tw`p-4`}>
+    <div class={tw`text-white flex flex-row align-middle`}>
+      <img src="/mesa-logo.png" style={{width: "40px", marginRight: "10px", display: "inline"}}></img>
+      <h1 class={tw`m-0 inline`}>Mesa.land</h1>
+    </div>
     <hr/>
     {!props.tableState && <Welcome/>}
     {props.tableState && <Table {...props.tableState}/>}

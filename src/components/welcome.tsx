@@ -2,10 +2,9 @@
 import { tw } from "../deps.ts";
 
 export const Welcome = () => (
-  <div class={tw`bg-red-50 rounded-lg border-solid border-2 border-purple-100`}>
-    <h1>Welcome to Mesa.land!</h1>
-
-    <p>Mesa.land is a community-driven, extensible card game that's created by gamers, for gamers like you.</p>
+  <div class={tw`bg-indigo-50 bg-opacity-50 p-4 rounded-lg`}>
+    <h1 class={tw``}>Welcome to Mesa.land!</h1>
+    <p>Mesa.land is a community-driven, extensible card game that's created by gamers, for gamers, like you.</p>
 
     <p>The Mesa.land engine has a simple basic set of rules, but the game possibilities are infinite thanks to user-created cards.</p>
 
