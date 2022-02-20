@@ -8,20 +8,26 @@ export type TableState = {
 }
 
 export const Table = (props: TableState) => (
-  <div class={tw`bg-green-50`}>
+  <div class={tw`bg-white bg-opacity-50 rounded-lg pt-6 mt-4 p-4 overflow-scroll h-[80vh]`}>
     <span>Table ID: {props.tableId}</span>
-    <h1>Supply</h1>
-    {props.cards.map((c: CardState) => (
-      <Card {...c} />
-    ))}
-    <h1>My hand</h1>
-    {props.cards.map((c: CardState) => (
-      <Card {...c} />
-    ))}
-    <h1>My discard</h1>
-    {props.cards.map((c: CardState) => (
-      <Card {...c} />
-    ))}
-    <h1>My deck: X</h1>
+    <h2>Supply</h2>
+    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+      {props.cards.map((c: CardState) => (
+        <Card {...c} />
+      ))}
+    </div>
+    <h2>My hand</h2>
+    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+      {props.cards.map((c: CardState) => (
+        <Card {...c} />
+      ))}
+    </div>
+    <h2>My discard</h2>
+    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+      {props.cards.map((c: CardState) => (
+        <Card {...c} />
+      ))}
+    </div>
+    <h2>My deck: 5 cards</h2>
   </div>
 )

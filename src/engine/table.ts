@@ -4,7 +4,7 @@ export const alphaTableCards : Array<CardState> = [
   {
     title: "1 Coin",
     image: '/cards/test.png',
-    description: "An initial testing card. Worth 1 coin.",
+    description: "Worth 1 coin.",
     types: {
       coin: true,
       action: false,
@@ -18,7 +18,7 @@ export const alphaTableCards : Array<CardState> = [
   {
     title: "3 Coins",
     image: '/cards/test.png',
-    description: "An initial testing card. Worth 3 coins.",
+    description: "Worth 3 coins.",
     types: {
       coin: true,
       action: false,
@@ -32,7 +32,7 @@ export const alphaTableCards : Array<CardState> = [
   {
     title: "1 Win",
     image: '/cards/test.png',
-    description: "An initial testing card. Worth 1 win.",
+    description: "Worth 1 win.",
     types: {
       coin: false,
       action: false,
@@ -46,7 +46,7 @@ export const alphaTableCards : Array<CardState> = [
   {
     title: "3 Wins",
     image: '/cards/test.png',
-    description: "An initial testing card. Worth 3 wins.",
+    description: "Worth 3 wins.",
     types: {
       coin: false,
       action: false,

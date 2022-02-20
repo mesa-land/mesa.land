@@ -14,12 +14,12 @@ export type CardState = {
 }
 
 export const Card = (props: CardState) => (
-  <div class={tw`bg-gray-50 rounded-lg border-solid border-2 border-purple-100`}>
+  <div class={tw`bg-gray-200 flex-auto p-2 mb-2 ml-1 mr-1 rounded-lg`}>
     {props.value && <span>{props.value}</span>}
-    <h1>{props.title}</h1>
+    <h2>{props.title}</h2>
     {/* <img src={props.image} /> */}
     <p>{props.description}</p>
-    <p>{props.cost}</p>
+    <p>Costs: {props.cost}</p>
   </div>
 )
 
