@@ -11,7 +11,7 @@ import {
   createServerTimingMiddleware,
 } from "./deps.ts";
 
-import { render } from "./components/app.tsx";
+import { render } from "./pages/_app.tsx";
 import { alphaTable } from "./engine/table.ts"
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
@@ -99,7 +99,7 @@ router.get("/", (context) => {
 });
 
 // Handle main route
-router.get("/t/alpha", (context) => {
+router.get("/m/alpha", (context) => {
   console.log(">>>", context.request.url.pathname);
 
   start('render')

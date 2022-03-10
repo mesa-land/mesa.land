@@ -9,7 +9,7 @@ import {
   tw,
 } from "../deps.ts";
 import { isLiveReloadEnabled } from "../config.ts";
-import { Layout, State } from "./layout.tsx"
+import { Layout, State } from "./index.tsx"
 
 const lr = isLiveReloadEnabled()
 const sheet = virtualSheet()

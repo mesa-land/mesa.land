@@ -1,6 +1,7 @@
 /** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/
 import { tw } from "../deps.ts";
-import { Card, CardState } from "./card.tsx";
+import { Card } from "../components/game/card.tsx";
+import { CardState } from "../std/card.ts";
 
 export type TableState = {
   tableId: string

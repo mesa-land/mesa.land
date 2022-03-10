@@ -1,0 +1,1 @@
+This is the alpha deck of cards for Mesa.land. It's just a bunch of test cards which play all possible actions.
