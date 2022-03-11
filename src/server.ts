@@ -5,6 +5,7 @@ import {
   cyan,
   green,
   HttpError,
+  IServerTimingState,
   join,
   red,
   Router,
@@ -12,16 +13,16 @@ import {
 } from "./deps.ts";
 
 import { render } from "./pages/_app.tsx";
-import { getTableStateById } from "./lobby/lobby.ts";
+import { getTableStateById, handleSocket } from "./lobby/lobby.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
 const publicFolderPath = join(__dirname, "..", "public");
-const { start, end, serverTimingMiddleware } = createServerTimingMiddleware();
+const scriptFolderPath = join(__dirname, "client/");
 
 const app = new Application();
 
-app.use(serverTimingMiddleware);
+app.use(createServerTimingMiddleware());
 
 // Error handler middleware
 app.use(async (context, next) => {
@@ -84,31 +85,76 @@ app.use(async (context, next) => {
 });
 
 // Create an oak Router
-const router = new Router();
+const router = new Router<IServerTimingState>();
 
 // Handle live reload websocket connection
 router.get("/_r", async (ctx) => {
   await ctx.upgrade();
 });
 
+// Handle game websocket connection
+router.get("/ws", async (ctx) => {
+  const sock = await ctx.upgrade();
+  handleSocket(sock);
+});
+
+// Handle client scripts
+router.get("/scripts/(.*).js", async (context) => {
+  const { timeStart, timeEnd } = context.state;
+  console.log(">>>", context.request.url.pathname);
+
+  timeStart("emit");
+  const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
+  const { files, diagnostics } = await Deno.emit(scriptPath, {
+    bundle: "classic",
+  });
+  if (diagnostics && diagnostics.length > 0) {
+    console.error(diagnostics);
+  }
+  context.response.type = "application/javascript";
+  context.response.body = files["deno:///bundle.js"];
+  timeEnd("emit");
+});
+
+// Handle source maps
+router.get("/scripts/(.*).js.map", async (context) => {
+  const { timeStart, timeEnd } = context.state;
+  console.log(">>>", context.request.url.pathname);
+
+  timeStart("emit");
+  const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
+  const { files, diagnostics } = await Deno.emit(scriptPath, {
+    bundle: "classic",
+  });
+  if (diagnostics && diagnostics.length > 0) {
+    console.error(diagnostics);
+  }
+  context.response.type = "application/json";
+  context.response.body = files["deno:///bundle.js.map"];
+  timeEnd("emit");
+});
+
 // Handle main route
 router.get("/", (context) => {
   console.log(">>>", context.request.url.pathname);
 
-  start("render");
-  context.response.body = render({});
-  end("render");
+  context.state.timeSync("render", () => {
+    context.response.body = render({});
+  });
 });
 
 // Handle table route
 router.get("/m/alpha", (context) => {
+  const { timeStart, timeEnd, timeSync } = context.state;
   console.log(">>>", context.request.url.pathname);
 
+  timeStart("fetch");
   const alphaTable = getTableStateById("alpha");
+  timeEnd("fetch");
 
-  start("render");
-  context.response.body = render({ table: alphaTable });
-  end("render");
+  timeSync("render", () => {
+    context.response.body = render({ table: alphaTable });
+  });
 });
 
 app.use(router.routes());

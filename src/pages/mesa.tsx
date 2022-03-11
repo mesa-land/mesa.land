@@ -2,9 +2,9 @@
 import { tw } from "../deps.ts";
 import { Card } from "../components/game/card.tsx";
 import { CardState } from "../std/card.ts";
-import { Table } from "../std/table.ts";
+import { TableProps } from "../std/table.ts";
 
-export const TableComponent = (table: Table) => (
+export const TableComponent = (table: TableProps) => (
   <div
     class={tw
       `bg-white bg-opacity-50 rounded-lg pt-6 mt-4 p-4 overflow-scroll h-[80vh]`}
