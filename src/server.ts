@@ -1,27 +1,27 @@
 import {
   Application,
-  HttpError,
-  Router,
-  Status,
   bold,
+  createServerTimingMiddleware,
   cyan,
   green,
-  red,
+  HttpError,
   join,
-  createServerTimingMiddleware,
+  red,
+  Router,
+  Status,
 } from "./deps.ts";
 
 import { render } from "./pages/_app.tsx";
-import { alphaTable } from "./engine/table.ts"
+import { getTableStateById } from "./lobby/lobby.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
 const publicFolderPath = join(__dirname, "..", "public");
-const { start, end, serverTimingMiddleware } = createServerTimingMiddleware()
+const { start, end, serverTimingMiddleware } = createServerTimingMiddleware();
 
 const app = new Application();
 
-app.use(serverTimingMiddleware)
+app.use(serverTimingMiddleware);
 
 // Error handler middleware
 app.use(async (context, next) => {
@@ -65,7 +65,9 @@ app.use(async (context, next) => {
   await next();
   const rt = context.response.headers.get("X-Response-Time");
   console.log(
-    `${green(context.response.status.toString())} ${green(context.request.method)} ${cyan(context.request.url.pathname)} - ${
+    `${green(context.response.status.toString())} ${
+      green(context.request.method)
+    } ${cyan(context.request.url.pathname)} - ${
       bold(
         String(rt),
       )
@@ -85,7 +87,7 @@ app.use(async (context, next) => {
 const router = new Router();
 
 // Handle live reload websocket connection
-router.get('/_r', async ctx => {
+router.get("/_r", async (ctx) => {
   await ctx.upgrade();
 });
 
@@ -93,18 +95,20 @@ router.get('/_r', async ctx => {
 router.get("/", (context) => {
   console.log(">>>", context.request.url.pathname);
 
-  start('render')
+  start("render");
   context.response.body = render({});
-  end('render')
+  end("render");
 });
 
-// Handle main route
+// Handle table route
 router.get("/m/alpha", (context) => {
   console.log(">>>", context.request.url.pathname);
 
-  start('render')
-  context.response.body = render({ tableState: alphaTable });
-  end('render')
+  const alphaTable = getTableStateById("alpha");
+
+  start("render");
+  context.response.body = render({ table: alphaTable });
+  end("render");
 });
 
 app.use(router.routes());
@@ -112,7 +116,7 @@ app.use(router.allowedMethods());
 
 // Static content under /public
 app.use(async (context) => {
-  console.log(`>>> static try /public${context.request.url.pathname}`)
+  console.log(`>>> static try /public${context.request.url.pathname}`);
   await context.send({ root: publicFolderPath });
 });
 
