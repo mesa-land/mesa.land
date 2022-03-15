@@ -10,6 +10,7 @@ import {
 } from "../deps.ts";
 import { isLiveReloadEnabled } from "../config.ts";
 import { Layout, State } from "./index.tsx";
+import { Table } from "../std/table.ts";
 
 const lr = isLiveReloadEnabled();
 const sheet = virtualSheet();
@@ -19,7 +20,7 @@ export const render = (state: State) => {
   sheet.reset();
   const bodyClass = tw
     `font-sans bg-gradient-to-b from-black to-indigo-900 h-screen`;
-  const ssr = renderSSR(<Layout {...state} />);
+  const ssr = renderSSR(<Layout table={state.table} />);
   const { body, head, footer } = Helmet.SSR(ssr);
   const styleTag = getStyleTag(sheet);
 
@@ -39,6 +40,7 @@ export const render = (state: State) => {
         ${styleTag}
         ${head.join("\n")}
         <script async src="/scripts/ws.js"></script>
+        <script async src="/scripts/events.js"></script>
         ${lr ? <script async src="/livereload.js"></script> : ""}
       </head>
       <body class="${bodyClass}">

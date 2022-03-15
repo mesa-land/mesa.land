@@ -1,13 +1,3 @@
-export type Card = {
-  getTitle: () => string;
-  getDescription: () => string;
-  getValue: () => string;
-  getCost: () => string;
-  getType: () => string;
-};
-
-export type CardType = "action" | "coin" | "win" | "loss";
-
 export enum StateType {
   Supply = "supply",
   Discard = "discard",
@@ -16,12 +6,14 @@ export enum StateType {
   Trash = "trash",
 }
 
-export type CardState = {
+export type CardProps = {
+  quantity: number;
   title: string;
   image?: string;
-  description: string;
-  types: Record<CardType, boolean>;
-  value: number;
+  description?: string;
+  isAction: boolean;
+  coinValue: number;
+  winValue: number;
   cost: number;
   state: StateType;
   effects?: Record<string, any>;

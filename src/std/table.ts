@@ -1,4 +1,4 @@
-import { CardState } from "./card.ts";
+import { CardProps } from "./card.ts";
 import { Player } from "./player.ts";
 
 export enum EventType {
@@ -20,7 +20,7 @@ export type Event = {
 
 export type TableProps = {
   id: string;
-  cards: Array<CardState>;
+  supply: Array<CardProps>;
   players: Array<Player>;
   log: Array<Event>;
 };
@@ -28,36 +28,51 @@ export type TableProps = {
 export class Table {
   constructor(
     public id: string,
-    public cards: Array<CardState>,
+    public supply: Array<CardProps>,
     public players: Array<Player>,
     public log: Array<Event>,
   ) {
-    this.publishEvent({
-      type: EventType.GAIN_CARD,
-      turn: 0,
-      playerId: players[0].id,
-      data: { cards: "win", quantity: 3 },
-    });
-    this.currentPlayerId = players[0].id;
   }
 
   public currentPlayerId?: string;
   public turn: number = 0;
 
-  // Adds a new event to the event log and computes state changes
-  public publishEvent(event: Event) {
-  }
-
-  public addActions(quantity: number) {
+  public setup() {
     this.publishEvent({
       type: EventType.GAIN_CARD,
+      turn: 0,
+      playerId: this.players[0].id,
+      data: { card: "win", quantity: 3 },
+    });
+    this.currentPlayerId = this.players[0].id;
+  }
+
+  // Adds a new event to the event log and computes state changes
+  public publishEvent(event: Event) {
+    this.log.push(event);
+    if (event.type === EventType.GAIN_CARD) {
+    }
+  }
+
+  public gainActions(quantity: number, playerId?: string) {
+    this.publishEvent({
+      type: EventType.GAIN_ACTION,
       turn: this.turn,
-      playerId: this.currentPlayer()!.id,
-      data: { cards: "win", quantity },
+      playerId: playerId || this.player()!.id,
+      data: { quantity },
     });
   }
 
-  private currentPlayer() {
+  public drawCards(quantity: number, playerId?: string) {
+    this.publishEvent({
+      type: EventType.DRAW_CARD,
+      turn: this.turn,
+      playerId: playerId || this.player()!.id,
+      data: { quantity },
+    });
+  }
+
+  public player() {
     return this.players.find((p) => p.id === this.currentPlayerId);
   }
 

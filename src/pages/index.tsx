@@ -1,7 +1,7 @@
 /** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/
 import { tw } from "../deps.ts";
 import { Table } from "../std/table.ts";
-import { TableComponent } from "./mesa.tsx";
+import { TablePage } from "./table.tsx";
 
 export interface State {
   table?: Table;
@@ -54,6 +54,6 @@ export const Layout = (props: State) => (
     </div>
     <hr />
     {!props.table && <Home />}
-    {props.table && <TableComponent {...props.table} />}
+    {props.table && <TablePage table={props.table} />}
   </div>
 );
