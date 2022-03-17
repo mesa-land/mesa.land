@@ -16,13 +16,21 @@ export const Table = (props: { table: TableState }) => {
         `bg-white bg-opacity-50 rounded-lg pt-6 mt-4 p-4 overflow-scroll h-[80vh]`}
     >
       <span>Table ID: {props.table.id}</span>
-      <h2>Supply</h2>
-      <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-        {props.table.supply.map((c: CardProps) => <Card {...c} />)}
+      <div id="table-supply">
+        <h2>Supply</h2>
+        <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+          {props.table.supply.map((c: CardProps) => <Card {...c} />)}
+        </div>
       </div>
-      <h2>My hand:</h2>
-      <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-        {props.table.player()!.hand.map((c: CardProps) => <Card {...c} />)}
+      <div id="player-table">
+        <h2>My discard:</h2>
+        <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+          {props.table.player()!.discard.map((c: CardProps) => <Card {...c} />)}
+        </div>
+        <h2>My hand:</h2>
+        <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+          {props.table.player()!.hand.map((c: CardProps) => <Card {...c} />)}
+        </div>
       </div>
     </div>
   );

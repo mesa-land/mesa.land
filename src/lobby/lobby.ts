@@ -1,12 +1,13 @@
-import { CardProps } from "../std/card.ts";
-import { Table } from "../std/table.ts";
+import { CardState } from "../std/card.ts";
+import { Game } from "../std/game.ts";
 import { CoinCard } from "../x/alpha/coin.ts";
 import { WinCard } from "../x/alpha/win.ts";
 import { ClickFarmBoost } from "../x/alpha/actions/click-farm-boost.ts";
 import { SeedRound } from "../x/alpha/actions/seed-round.ts";
 import { Player } from "../std/player.ts";
+import { parseMesaEvent } from "../std/events.ts";
 
-const alphaTableCards: Array<CardProps> = [
+const alphaTableCards: Set<CardState> = new Set([
   CoinCard(1),
   CoinCard(2),
   CoinCard(3),
@@ -15,17 +16,14 @@ const alphaTableCards: Array<CardProps> = [
   WinCard(6),
   ClickFarmBoost,
   SeedRound,
-];
+]);
 
-const alphaPlayer = new Player("user1", 1, 1, 0, [], [], []);
-
-const alphaTable = new Table("alpha", alphaTableCards, [alphaPlayer], []);
-alphaTable.setup();
+const alpha = new Game("alpha", alphaTableCards, 2);
 
 const users = new Map<string, WebSocket>();
 
 export function getTableStateById(id: string) {
-  return alphaTable;
+  return alpha;
 }
 
 interface WSEvent extends Event {
@@ -37,13 +35,17 @@ export function handleSocket(ws: WebSocket) {
   const userId = crypto.randomUUID();
   users.set(userId, ws);
 
+  // Join game when user connects
   ws.onopen = (e: Event) => {
     console.log("connected to", userId);
     ws.send(`hi, ${userId}`);
+    alpha.joinGame(userId);
   };
 
   ws.onmessage = (e: WSEvent) => {
-    console.log("got message from", userId, e.data);
+    console.log("got message from", userId);
+    const mesaEvent = parseMesaEvent(e.data);
+    alpha.publish(mesaEvent);
   };
 }
 

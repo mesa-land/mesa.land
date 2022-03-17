@@ -39,7 +39,6 @@ export const render = (state: State) => {
         <meta property="og:url" content="https://mesa.land">
         ${styleTag}
         ${head.join("\n")}
-        <script async src="/scripts/ws.js"></script>
         <script async src="/scripts/events.js"></script>
         ${lr ? <script async src="/livereload.js"></script> : ""}
       </head>

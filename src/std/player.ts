@@ -1,13 +1,18 @@
-import { CardProps } from "./card.ts";
-
 export class Player {
+  public actions: number = 0;
+  public buys: number = 0;
+  public coins: number = 0;
+  public wins: number = 0;
+  public actionsUsed: number = 0;
+  public buysUsed: number = 0;
+  // An array of cardIds representing shuffle order
+  public deck: Array<string> = [];
+  // An array of cardIds representing shuffle order
+  public discard: Array<string> = [];
+  // An array of cardIds representing shuffle order
+  public hand: Array<string> = [];
+
   constructor(
     public id: string,
-    public actions: number,
-    public buys: number,
-    public wins: number,
-    public deck: Array<CardProps>,
-    public discard: Array<CardProps>,
-    public hand: Array<CardProps>,
   ) {}
 }

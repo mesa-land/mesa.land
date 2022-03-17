@@ -1,9 +1,9 @@
 /** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/
 import { tw } from "../deps.ts";
 
-import { CardProps } from "../std/card.ts";
+import { CardState } from "../std/card.ts";
 
-export const Card = (props: CardProps) => (
+export const Card = (props: CardState) => (
   <div
     class={tw`bg-gray-200 p-2 mb-2 ml-1 mr-1 rounded-lg` +
       " card-c"}
@@ -21,6 +21,6 @@ export const Card = (props: CardProps) => (
     </div>
 
     <p>Costs: {props.cost}</p>
-    <button data-card-title={props.title}>Buy</button>
+    <button data-card-title={props.title} data-card-event="buy">Buy</button>
   </div>
 );

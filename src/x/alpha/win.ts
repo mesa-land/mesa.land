@@ -1,6 +1,7 @@
-import { CardProps, StateType } from "../../std/card.ts";
+import { CardState } from "../../std/card.ts";
 
 const oneWin = {
+  id: "1w",
   quantity: 20,
   title: "1 Win",
   image: "/cards/1-win.png",
@@ -8,10 +9,10 @@ const oneWin = {
   winValue: 1,
   coinValue: 0,
   cost: 2,
-  state: StateType.Supply,
 };
 
 const threeWins = {
+  id: "3w",
   quantity: 20,
   title: "3 Wins",
   image: "/cards/3-wins.png",
@@ -19,10 +20,10 @@ const threeWins = {
   winValue: 3,
   coinValue: 0,
   cost: 5,
-  state: StateType.Supply,
 };
 
 const sixWins = {
+  id: "6w",
   quantity: 10,
   title: "6 Wins",
   image: "/cards/6-wins.png",
@@ -30,10 +31,9 @@ const sixWins = {
   winValue: 6,
   coinValue: 0,
   cost: 8,
-  state: StateType.Supply,
 };
 
-export const WinCard = (value: 1 | 3 | 6): CardProps => {
+export const WinCard = (value: 1 | 3 | 6): CardState => {
   switch (value) {
     case 1:
       return oneWin;

@@ -1,20 +1,19 @@
-export enum StateType {
-  Supply = "supply",
-  Discard = "discard",
-  Hand = "hand",
-  Play = "play",
-  Trash = "trash",
-}
+import { GameMoves, MesaEvent } from "./events.ts";
 
-export type CardProps = {
-  quantity: number;
-  title: string;
-  image?: string;
-  description?: string;
-  isAction: boolean;
-  coinValue: number;
-  winValue: number;
-  cost: number;
-  state: StateType;
-  effects?: Record<string, any>;
-};
+export type CardId = string;
+
+export class CardState {
+  public image?: string;
+
+  constructor(
+    public id: CardId,
+    public title: string,
+    public isAction: boolean,
+    public coinValue: number,
+    public winValue: number,
+    public cost: number,
+    public description?: string,
+    public onPlay?: (moves: GameMoves) => Array<MesaEvent>,
+  ) {
+  }
+}
