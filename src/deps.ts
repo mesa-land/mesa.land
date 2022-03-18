@@ -32,5 +32,3 @@ export {
   virtualSheet,
 } from "https://cdn.esm.sh/twind@0.16.16/sheets?target=deno";
 export { apply, css } from "https://cdn.esm.sh/twind@0.16.16/css?target=deno";
-export { default as Babel } from "https://esm.sh/@babel/standalone@7.17.6";
-export * as BabelPluginImportMap from "https://esm.sh/babel-plugin-import-map@1.0.0";
