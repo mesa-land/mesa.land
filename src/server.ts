@@ -1,27 +1,28 @@
 import {
   Application,
-  HttpError,
-  Router,
-  Status,
   bold,
+  createServerTimingMiddleware,
   cyan,
   green,
-  red,
+  HttpError,
+  IServerTimingState,
   join,
-  createServerTimingMiddleware,
+  red,
+  Router,
+  Status,
 } from "./deps.ts";
 
-import { render } from "./components/app.tsx";
-import { alphaTable } from "./engine/table.ts"
+import { render } from "./pages/_app.tsx";
+import { getTableStateById, handleSocket } from "./lobby/lobby.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
 const publicFolderPath = join(__dirname, "..", "public");
-const { start, end, serverTimingMiddleware } = createServerTimingMiddleware()
+const scriptFolderPath = join(__dirname, "client/");
 
 const app = new Application();
 
-app.use(serverTimingMiddleware)
+app.use(createServerTimingMiddleware());
 
 // Error handler middleware
 app.use(async (context, next) => {
@@ -65,7 +66,9 @@ app.use(async (context, next) => {
   await next();
   const rt = context.response.headers.get("X-Response-Time");
   console.log(
-    `${green(context.response.status.toString())} ${green(context.request.method)} ${cyan(context.request.url.pathname)} - ${
+    `${green(context.response.status.toString())} ${
+      green(context.request.method)
+    } ${cyan(context.request.url.pathname)} - ${
       bold(
         String(rt),
       )
@@ -82,29 +85,86 @@ app.use(async (context, next) => {
 });
 
 // Create an oak Router
-const router = new Router();
+const router = new Router<IServerTimingState>();
 
 // Handle live reload websocket connection
-router.get('/_r', async ctx => {
+router.get("/_r", async (ctx) => {
   await ctx.upgrade();
+});
+
+// Handle game websocket connection
+router.get("/ws", async (ctx) => {
+  const sock = await ctx.upgrade();
+  handleSocket(sock);
+});
+
+// Handle client scripts
+router.get("/scripts/(.*).js", async (context) => {
+  const { timeStart, timeEnd } = context.state;
+  console.log(">>>", context.request.url.pathname);
+
+  timeStart("emit");
+  const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
+  const { files, diagnostics } = await Deno.emit(scriptPath, {
+    bundle: "classic",
+    compilerOptions: {
+      "lib": [
+        "dom",
+        "dom.asynciterable",
+        "dom.iterable",
+        "deno.ns",
+        "esnext",
+        "deno.unstable",
+      ],
+    },
+  });
+  if (diagnostics && diagnostics.length > 0) {
+    console.error(diagnostics);
+  }
+  context.response.type = "application/javascript";
+  context.response.body = files["deno:///bundle.js"];
+  timeEnd("emit");
+});
+
+// Handle source maps
+router.get("/scripts/(.*).js.map", async (context) => {
+  const { timeStart, timeEnd } = context.state;
+  console.log(">>>", context.request.url.pathname);
+
+  timeStart("emit");
+  const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
+  const { files, diagnostics } = await Deno.emit(scriptPath, {
+    bundle: "classic",
+  });
+  if (diagnostics && diagnostics.length > 0) {
+    console.error(diagnostics);
+  }
+  context.response.type = "application/json";
+  context.response.body = files["deno:///bundle.js.map"];
+  timeEnd("emit");
 });
 
 // Handle main route
 router.get("/", (context) => {
   console.log(">>>", context.request.url.pathname);
 
-  start('render')
-  context.response.body = render({});
-  end('render')
+  context.state.timeSync("render", () => {
+    context.response.body = render({});
+  });
 });
 
-// Handle main route
-router.get("/t/alpha", (context) => {
+// Handle table route
+router.get("/m/alpha", (context) => {
+  const { timeStart, timeEnd, timeSync } = context.state;
   console.log(">>>", context.request.url.pathname);
 
-  start('render')
-  context.response.body = render({ tableState: alphaTable });
-  end('render')
+  timeStart("fetch");
+  const alphaTable = getTableStateById("alpha");
+  timeEnd("fetch");
+
+  timeSync("render", () => {
+    context.response.body = render({ game: alphaTable });
+  });
 });
 
 app.use(router.routes());
@@ -112,7 +172,7 @@ app.use(router.allowedMethods());
 
 // Static content under /public
 app.use(async (context) => {
-  console.log(`>>> static try /public${context.request.url.pathname}`)
+  console.log(`>>> static try /public${context.request.url.pathname}`);
   await context.send({ root: publicFolderPath });
 });
 
