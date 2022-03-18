@@ -4,7 +4,6 @@ import { CoinCard } from "../x/alpha/coin.ts";
 import { WinCard } from "../x/alpha/win.ts";
 import { ClickFarmBoost } from "../x/alpha/actions/click-farm-boost.ts";
 import { SeedRound } from "../x/alpha/actions/seed-round.ts";
-import { Player } from "../std/player.ts";
 import { parseMesaEvent } from "../std/events.ts";
 
 const alphaTableCards: Set<CardState> = new Set([

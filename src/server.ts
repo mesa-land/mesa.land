@@ -153,7 +153,7 @@ router.get("/m/alpha", (context) => {
   timeEnd("fetch");
 
   timeSync("render", () => {
-    context.response.body = render({ table: alphaTable });
+    context.response.body = render({ game: alphaTable });
   });
 });
 

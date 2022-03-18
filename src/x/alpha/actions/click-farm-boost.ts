@@ -1,5 +1,5 @@
 import { CardState } from "../../../std/card.ts";
-import { GameMoves } from "../../../std/events.ts";
+import { GameMoves, TargetPlayer } from "../../../std/events.ts";
 
 export const ClickFarmBoost = new CardState(
   "cfa",
@@ -8,10 +8,11 @@ export const ClickFarmBoost = new CardState(
   0,
   0,
   3,
+  10,
   "+2 Actions",
   (moves: GameMoves) => {
     return [
-      game.gainActions(game.player()!.id, 2),
+      moves.gainActions(TargetPlayer.CURRENT, 2),
     ];
   },
 );

@@ -8,19 +8,33 @@ import {
   tw,
   virtualSheet,
 } from "../deps.ts";
+import { Game } from "../std/game.ts";
+import { Header } from "../components/header.tsx";
+import { Home } from "./index.tsx";
+import { TablePage } from "./table.tsx";
 import { isLiveReloadEnabled } from "../config.ts";
-import { Layout, State } from "./index.tsx";
-import { Table } from "../std/table.ts";
 
 const lr = isLiveReloadEnabled();
 const sheet = virtualSheet();
 setup({ sheet, preflight: false });
 
+export interface State {
+  game?: Game;
+}
+
+const Layout = (props: State) => (
+  <div class={tw`p-4 pb-0`}>
+    <Header />
+    {!props.game && <Home />}
+    {props.game && <TablePage game={props.game} />}
+  </div>
+);
+
 export const render = (state: State) => {
   sheet.reset();
   const bodyClass = tw
     `font-sans bg-gradient-to-b from-black to-indigo-900 h-screen`;
-  const ssr = renderSSR(<Layout table={state.table} />);
+  const ssr = renderSSR(<Layout game={state.game} />);
   const { body, head, footer } = Helmet.SSR(ssr);
   const styleTag = getStyleTag(sheet);
 

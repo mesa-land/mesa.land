@@ -9,7 +9,7 @@ export const Card = (props: CardState) => (
       " card-c"}
     style="width: 140px;"
   >
-    <span>Qty: {props.quantity}</span>
+    <span>Qty: {props.inSupply}</span>
     <h2>{props.title}</h2>
     {/* <img src={props.image} /> */}
     <p>{props.description}</p>

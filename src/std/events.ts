@@ -1,12 +1,15 @@
 import { CardId } from "./card.ts";
 
 export enum MesaEventType {
+  START = "start",
   PLAY = "play",
   BUY = "buy",
   DRAW = "draw",
   GAIN_ACTION = "gainAction",
   GAIN_BUY = "gainBuy",
   GAIN_CARD = "gainCard",
+  SHUFFLE = "shuffle",
+  TRASH = "trash",
 }
 
 export enum TargetPlayer {
@@ -16,7 +19,7 @@ export enum TargetPlayer {
 
 export type MesaEvent = {
   type: MesaEventType;
-  quantity: number;
+  quantity?: number;
   target?: TargetPlayer;
   turn?: number;
   playerId?: string;

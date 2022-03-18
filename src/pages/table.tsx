@@ -1,10 +1,10 @@
 /** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/
 // import { tw } from "../deps.ts";
 import { Table } from "../components/table.tsx";
-import { Table as TableState } from "../std/table.ts";
+import { Game } from "../std/game.ts";
 
-export const TablePage = (props: { table: TableState }) => (
+export const TablePage = (props: { game: Game }) => (
   <div>
-    <Table table={props.table} />
+    <Table game={props.game} />
   </div>
 );

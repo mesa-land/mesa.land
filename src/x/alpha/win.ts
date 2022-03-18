@@ -9,6 +9,7 @@ const oneWin = {
   winValue: 1,
   coinValue: 0,
   cost: 2,
+  inSupply: 10,
 };
 
 const threeWins = {
@@ -20,6 +21,7 @@ const threeWins = {
   winValue: 3,
   coinValue: 0,
   cost: 5,
+  inSupply: 10,
 };
 
 const sixWins = {
@@ -31,6 +33,7 @@ const sixWins = {
   winValue: 6,
   coinValue: 0,
   cost: 8,
+  inSupply: 10,
 };
 
 export const WinCard = (value: 1 | 3 | 6): CardState => {

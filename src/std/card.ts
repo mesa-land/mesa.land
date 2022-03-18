@@ -12,6 +12,7 @@ export class CardState {
     public coinValue: number,
     public winValue: number,
     public cost: number,
+    public inSupply: number = 10,
     public description?: string,
     public onPlay?: (moves: GameMoves) => Array<MesaEvent>,
   ) {

@@ -8,6 +8,7 @@ export const SeedRound = new CardState(
   0,
   0,
   4,
+  10,
   "+2 Cards, +1 Action",
   (moves: GameMoves) => {
     return [
