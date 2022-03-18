@@ -3,7 +3,14 @@ import { tw } from "../deps.ts";
 
 import { CardState } from "../std/card.ts";
 
-export const Card = (props: { card: CardState; showQuantity?: boolean }) => (
+export const Card = (
+  props: {
+    card: CardState;
+    showQuantity?: boolean;
+    showBuy?: boolean;
+    showPlay?: boolean;
+  },
+) => (
   <div
     class={tw`bg-gray-200 p-2 mb-2 ml-1 mr-1 rounded-lg` +
       " card-c"}
@@ -24,8 +31,15 @@ export const Card = (props: { card: CardState; showQuantity?: boolean }) => (
     </div>
 
     <p>Costs: {props.card.cost}</p>
-    <button data-card-title={props.card.title} data-card-event="buy">
-      Buy
-    </button>
+    {props.showBuy && (
+      <button data-card-id={props.card.id} data-event-type="buy">
+        Buy
+      </button>
+    )}
+    {props.showPlay && (props.card.isAction || props.card.coinValue !== 0) && (
+      <button data-card-id={props.card.id} data-event-type="play">
+        Play
+      </button>
+    )}
   </div>
 );

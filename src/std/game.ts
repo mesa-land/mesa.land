@@ -2,6 +2,25 @@ import { CardId, CardState } from "./card.ts";
 import { Player } from "./player.ts";
 import { MesaEvent, MesaEventType } from "./events.ts";
 
+function shuffle<T>(array: Array<T>): Array<T> {
+  let currentIndex = array.length, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
+
 export type GameProps = {
   id: string;
   supply: Array<CardState>;
@@ -110,6 +129,7 @@ export class Game {
     }
     if (event.type === MesaEventType.PLAY) {
       this.inPlay.push(event.cardId as CardId);
+      player.hand.splice(player.hand.indexOf(event.cardId as CardId), 1);
       if (card.isAction) {
         // TODO card.onPlay()
         console.log("Action played", card.title);
@@ -129,16 +149,23 @@ export class Game {
       }
     }
     if (event.type === MesaEventType.GAIN_CARD) {
-      if (card.inSupply) {
-        player.discard.push(event.cardId!);
-        card.inSupply--;
+      for (let i = 0; i < event.quantity!; i++) {
+        if (card.inSupply) {
+          player.discard.push(event.cardId!);
+          card.inSupply--;
+        }
       }
+    }
+    if (event.type === MesaEventType.SHUFFLE) {
+      const newDeck = shuffle(player.discard);
+      player.discard = [];
+      player.deck = newDeck;
     }
     if (event.type === MesaEventType.DRAW) {
       for (let i = 0; i < event.quantity!; i++) {
-        const topDeck = this.player().deck.pop();
+        const topDeck = player.deck.pop();
         if (topDeck) {
-          this.player().hand.push(topDeck);
+          player.hand.push(topDeck);
         }
       }
     }
@@ -184,6 +211,16 @@ export class Game {
     });
 
     return actions;
+  }
+
+  public getInPlay(): Array<CardState> {
+    const inPlay: Array<CardState> = [];
+
+    this.inPlay.forEach((c) => {
+      inPlay.push(this.cards[c]);
+    });
+
+    return inPlay;
   }
 
   public getDiscard(): Array<CardState> {

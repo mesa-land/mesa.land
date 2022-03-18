@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
     if (e.target.dataset.eventType) {
       const eventData = {
         type: e.target.dataset.eventType,
-        id: e.target.dataset.cardId,
+        cardId: e.target.dataset.cardId,
       };
 
       console.log(e.target, eventData);
@@ -23,9 +23,11 @@ window.addEventListener("load", () => {
     const event: { html: string; css: Array<string> } = JSON.parse(e.data);
 
     console.log("replace html", event.html);
+    const scrollTop = document.getElementById("table-component")?.scrollTop;
     const div = document.createElement("div");
     div.innerHTML = event.html;
     document.getElementById("table-page")?.replaceWith(div.firstChild!);
+    document.getElementById("table-component")?.scroll({ top: scrollTop });
 
     console.log("replace style", event.css);
     const cssRules = document.styleSheets[0].cssRules;
@@ -34,10 +36,13 @@ window.addEventListener("load", () => {
       console.log("check rule", rule);
       let match = false;
       for (let j = 0; j < cssRules.length; j++) {
-        const selectorStart = cssRules[j].selectorText + "{";
-        if (rule.startsWith(selectorStart)) {
-          match = true;
-          continue;
+        const existingRule = cssRules[j];
+        if (existingRule instanceof CSSStyleRule) {
+          const selectorStart = existingRule.selectorText + "{";
+          if (rule.startsWith(selectorStart)) {
+            match = true;
+            continue;
+          }
         }
       }
       if (!match) {

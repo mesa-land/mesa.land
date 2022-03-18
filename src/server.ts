@@ -107,6 +107,16 @@ router.get("/scripts/(.*).js", async (context) => {
   const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
   const { files, diagnostics } = await Deno.emit(scriptPath, {
     bundle: "classic",
+    compilerOptions: {
+      "lib": [
+        "dom",
+        "dom.asynciterable",
+        "dom.iterable",
+        "deno.ns",
+        "esnext",
+        "deno.unstable",
+      ],
+    },
   });
   if (diagnostics && diagnostics.length > 0) {
     console.error(diagnostics);

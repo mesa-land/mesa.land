@@ -45,6 +45,7 @@ export function handleSocket(ws: WebSocket) {
   ws.onmessage = (e: WSEvent) => {
     console.log("got message from", userId);
     const mesaEvent = parseMesaEvent(e.data);
+    mesaEvent.playerId = userId;
     alpha.publish(mesaEvent);
     ws.send(renderTable(alpha));
   };

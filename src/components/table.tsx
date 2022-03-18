@@ -19,12 +19,12 @@ const Supply = (props: { game: Game }) => (
     <h2>Supply</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getCoinsAndWins().map((c: CardState) => (
-        <Card card={c} showQuantity />
+        <Card card={c} showQuantity showBuy />
       ))}
     </div>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getActions().map((c: CardState) => (
-        <Card card={c} showQuantity />
+        <Card card={c} showQuantity showBuy />
       ))}
     </div>
   </div>
@@ -32,13 +32,26 @@ const Supply = (props: { game: Game }) => (
 
 const Player = (props: { game: Game }) => (
   <div id="player-table">
+    <h2>In play:</h2>
+    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+      {props.game.getInPlay().map((c: CardState) => (
+        <Card
+          card={c}
+        />
+      ))}
+    </div>
     <h2>My discard:</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getDiscard().map((c: CardState) => <Card card={c} />)}
+      {props.game.getDiscard().map((c: CardState) => (
+        <Card
+          card={c}
+          showPlay
+        />
+      ))}
     </div>
     <h2>My hand:</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getHand().map((c: CardState) => <Card card={c} />)}
+      {props.game.getHand().map((c: CardState) => <Card card={c} showPlay />)}
     </div>
     <span>Deck: {props.game.player().deck.length}</span>
   </div>
