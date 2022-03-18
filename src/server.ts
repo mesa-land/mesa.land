@@ -15,6 +15,7 @@ import {
 import { render } from "./pages/_app.tsx";
 import { getTableStateById, handleSocket } from "./lobby/lobby.ts";
 import { transform } from "./assets.ts";
+import { isLiveReloadEnabled } from "./config.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
@@ -99,19 +100,19 @@ router.get("/ws", async (ctx) => {
   handleSocket(sock);
 });
 
-// Handle client scripts
-router.get("/scripts/(.*).js", async (context) => {
-  const { timeStart, timeEnd } = context.state;
-  console.log(">>>", context.request.url.pathname);
+// TODO: Deno Deploy doesn't support emit or eval :( // Handle client scripts
+// router.get("/scripts/(.*).js", async (context) => {
+//   const { timeStart, timeEnd } = context.state;
+//   console.log(">>>", context.request.url.pathname);
 
-  timeStart("babel");
-  const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
-  const { code, metadata } = await transform(scriptPath);
-  console.log(metadata);
-  context.response.type = "application/javascript";
-  context.response.body = code;
-  timeEnd("babel");
-});
+//   timeStart("babel");
+//   const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
+//   const { code, metadata } = await transform(scriptPath);
+//   console.log(metadata);
+//   context.response.type = "application/javascript";
+//   context.response.body = code;
+//   timeEnd("babel");
+// });
 
 // Handle main route
 router.get("/", (context) => {
@@ -149,6 +150,16 @@ app.use(async (context) => {
 app.addEventListener("listen", () => {
   console.log(`Listening on ${cyan(`http://localhost:${PORT}`)}`);
 });
+
+if (isLiveReloadEnabled()) {
+  const start = Date.now();
+  // Run babel every restart
+  const scriptPath = join(scriptFolderPath, "events") + ".ts";
+  const { code } = await transform(scriptPath);
+  await Deno.writeTextFile(join(publicFolderPath, "scripts/events.js"), code);
+  const ms = Date.now() - start;
+  console.log(`>>> babel complete in ${ms}ms`);
+}
 
 // Start server
 await app.listen({ port: PORT });
