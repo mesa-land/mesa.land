@@ -39,6 +39,7 @@ export class Game {
   }
 
   public joinGame(playerId: string) {
+    console.log("Join game", playerId);
     if (!this.players.find((p) => p.id === playerId)) {
       this.players.push(new Player(playerId));
     }
@@ -53,6 +54,10 @@ export class Game {
     if (this.status !== GameStatus.WAITING) {
       throw new Error(`Game ${this.id} was already started.`);
     }
+
+    // Select first player
+    this.currentPlayerId =
+      this.players[Math.floor(Math.random() * this.players.length)].id;
 
     // Distribute initial cards
     this.players.forEach((p) => {
@@ -88,10 +93,7 @@ export class Game {
       });
     });
 
-    // Select first player
-    this.currentPlayerId =
-      this.players[Math.floor(Math.random() * this.players.length)].id;
-
+    this.status = GameStatus.PLAYING;
     // Start first turn
     this.startTurn(0);
   }
@@ -101,6 +103,7 @@ export class Game {
     console.log("publishing event", event);
 
     const card = this.cards[event.cardId!];
+    const player = this.players.find((p) => p.id === event.playerId) as Player;
 
     if (event.type === MesaEventType.START) {
       this.startGame();
@@ -120,13 +123,14 @@ export class Game {
         this.publish({
           cardId: event.cardId,
           type: MesaEventType.GAIN_CARD,
+          playerId: player.id,
           quantity: 1,
         });
       }
     }
     if (event.type === MesaEventType.GAIN_CARD) {
       if (card.inSupply) {
-        this.player().discard.push(event.cardId!);
+        player.discard.push(event.cardId!);
         card.inSupply--;
       }
     }

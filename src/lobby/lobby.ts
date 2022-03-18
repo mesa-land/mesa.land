@@ -5,6 +5,7 @@ import { WinCard } from "../x/alpha/win.ts";
 import { ClickFarmBoost } from "../x/alpha/actions/click-farm-boost.ts";
 import { SeedRound } from "../x/alpha/actions/seed-round.ts";
 import { parseMesaEvent } from "../std/events.ts";
+import { renderTable } from "../pages/_app.tsx";
 
 const alphaTableCards: Set<CardState> = new Set([
   CoinCard(1),
@@ -37,14 +38,15 @@ export function handleSocket(ws: WebSocket) {
   // Join game when user connects
   ws.onopen = (e: Event) => {
     console.log("connected to", userId);
-    ws.send(`hi, ${userId}`);
     alpha.joinGame(userId);
+    ws.send(renderTable(alpha));
   };
 
   ws.onmessage = (e: WSEvent) => {
     console.log("got message from", userId);
     const mesaEvent = parseMesaEvent(e.data);
     alpha.publish(mesaEvent);
+    ws.send(renderTable(alpha));
   };
 }
 

@@ -8,7 +8,7 @@ const Hall = (props: { game: Game }) => (
   <div id="waiting-hall">
     <span>Players:</span>
     <ul>
-      {props.game.players.forEach((p) => p.id)}
+      {props.game.players.map((p) => <li>{p.id}</li>)}
     </ul>
     <button data-event-type="start">Start</button>
   </div>
@@ -18,10 +18,14 @@ const Supply = (props: { game: Game }) => (
   <div id="table-supply">
     <h2>Supply</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getCoinsAndWins().map((c: CardState) => <Card {...c} />)}
+      {props.game.getCoinsAndWins().map((c: CardState) => (
+        <Card card={c} showQuantity />
+      ))}
     </div>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getActions().map((c: CardState) => <Card {...c} />)}
+      {props.game.getActions().map((c: CardState) => (
+        <Card card={c} showQuantity />
+      ))}
     </div>
   </div>
 );
@@ -30,13 +34,13 @@ const Player = (props: { game: Game }) => (
   <div id="player-table">
     <h2>My discard:</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getDiscard().map((c: CardState) => <Card {...c} />)}
+      {props.game.getDiscard().map((c: CardState) => <Card card={c} />)}
     </div>
     <h2>My hand:</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getHand().map((c: CardState) => <Card {...c} />)}
+      {props.game.getHand().map((c: CardState) => <Card card={c} />)}
     </div>
-    <span>Deck: ${props.game.player().deck.length}</span>
+    <span>Deck: {props.game.player().deck.length}</span>
   </div>
 );
 
@@ -50,7 +54,6 @@ const GameTable = (props: { game: Game }) => (
 const Results = () => <span>You win</span>;
 
 export const Table = (props: { game: Game }) => {
-  console.log("hello from Table", props.game instanceof Game);
   return (
     <div
       id="table-component"

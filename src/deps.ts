@@ -28,6 +28,7 @@ export type { IServerTimingState } from "https://deno.land/x/server_timing@0.0.4
 export { setup, tw } from "https://cdn.esm.sh/twind@0.16.16?target=deno";
 export {
   getStyleTag,
+  getStyleTagProperties,
   virtualSheet,
 } from "https://cdn.esm.sh/twind@0.16.16/sheets?target=deno";
 export { apply, css } from "https://cdn.esm.sh/twind@0.16.16/css?target=deno";

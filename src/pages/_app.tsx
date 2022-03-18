@@ -1,6 +1,7 @@
 /** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/
 import {
   getStyleTag,
+  getStyleTagProperties,
   Helmet,
   html,
   renderSSR,
@@ -29,6 +30,20 @@ const Layout = (props: State) => (
     {props.game && <TablePage game={props.game} />}
   </div>
 );
+
+export const renderTable = (game: Game) => {
+  sheet.reset();
+  const html = renderSSR(<TablePage game={game!} />);
+  const { textContent } = getStyleTagProperties(sheet);
+  const split = textContent.split("}");
+  split.pop();
+  const css = split.map((r) => r + "}");
+
+  return JSON.stringify({
+    html,
+    css,
+  });
+};
 
 export const render = (state: State) => {
   sheet.reset();
