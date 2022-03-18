@@ -18,7 +18,6 @@ import { getTableStateById, handleSocket } from "./lobby/lobby.ts";
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
 const publicFolderPath = join(__dirname, "..", "public");
-const scriptFolderPath = join(__dirname, "client/");
 
 const app = new Application();
 
