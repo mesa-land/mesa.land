@@ -14,6 +14,7 @@ import {
 
 import { render } from "./pages/_app.tsx";
 import { getTableStateById, handleSocket } from "./lobby/lobby.ts";
+import { transform } from "./assets.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
@@ -103,45 +104,13 @@ router.get("/scripts/(.*).js", async (context) => {
   const { timeStart, timeEnd } = context.state;
   console.log(">>>", context.request.url.pathname);
 
-  timeStart("emit");
+  timeStart("babel");
   const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
-  const { files, diagnostics } = await Deno.emit(scriptPath, {
-    bundle: "classic",
-    compilerOptions: {
-      "lib": [
-        "dom",
-        "dom.asynciterable",
-        "dom.iterable",
-        "deno.ns",
-        "esnext",
-        "deno.unstable",
-      ],
-    },
-  });
-  if (diagnostics && diagnostics.length > 0) {
-    console.error(diagnostics);
-  }
+  const { code, metadata } = await transform(scriptPath);
+  console.log(metadata);
   context.response.type = "application/javascript";
-  context.response.body = files["deno:///bundle.js"];
-  timeEnd("emit");
-});
-
-// Handle source maps
-router.get("/scripts/(.*).js.map", async (context) => {
-  const { timeStart, timeEnd } = context.state;
-  console.log(">>>", context.request.url.pathname);
-
-  timeStart("emit");
-  const scriptPath = join(scriptFolderPath, context.params[0]) + ".ts";
-  const { files, diagnostics } = await Deno.emit(scriptPath, {
-    bundle: "classic",
-  });
-  if (diagnostics && diagnostics.length > 0) {
-    console.error(diagnostics);
-  }
-  context.response.type = "application/json";
-  context.response.body = files["deno:///bundle.js.map"];
-  timeEnd("emit");
+  context.response.body = code;
+  timeEnd("babel");
 });
 
 // Handle main route

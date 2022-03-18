@@ -1,5 +1,3 @@
-import { MesaEvent } from "../std/events.ts";
-
 window.addEventListener("load", () => {
   let ws = new WebSocket("ws://" + location.host + "/ws");
 
