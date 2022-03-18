@@ -1,6 +1,6 @@
-import { Babel } from "./deps.ts";
+import { default as Babel } from "https://esm.sh/@babel/standalone@7.17.6";
 
-import { isDev } from "./config.ts";
+import { isDev } from "./src/config.ts";
 
 export interface Metadata {
   dependencies?: string[];
@@ -25,3 +25,10 @@ export const transform = async (
 
   return { code: withComments, metadata };
 };
+
+const start = Date.now();
+const scriptPath = "./src/client/events.ts";
+const { code } = await transform(scriptPath);
+await Deno.writeTextFile("./public/scripts/events.js", code);
+const ms = Date.now() - start;
+console.log(`>>> babel complete in ${ms}ms`);
