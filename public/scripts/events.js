@@ -1,6 +1,7 @@
 // @ts-nocheck
 window.addEventListener("load", () => {
-  let ws = new WebSocket("ws://" + location.host + "/ws");
+  let address = location.host === "mesa.land" ? "wss://mesa.land/ws" : "ws://" + location.host + "/ws";
+  let ws = new WebSocket(address);
 
   const onClick = e => {
     if (e.target.dataset.eventType) {
