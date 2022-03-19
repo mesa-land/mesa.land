@@ -2,7 +2,7 @@
 import { tw } from "../deps.ts";
 
 export const Home = () => (
-  <div class={tw`bg-white bg-opacity-50 p-4 rounded-lg pt-6 mt-4 p-12`}>
+  <div class={tw`p-4 rounded-lg pt-6 mt-4 p-12 text-gray-200`}>
     <h2 class={tw`pt-0`}>Welcome to Mesa!</h2>
 
     <div class={tw`text-lg`}>

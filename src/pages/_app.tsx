@@ -48,13 +48,13 @@ export const renderTable = (game: Game) => {
 export const render = (state: State) => {
   sheet.reset();
   const bodyClass = tw
-    `font-sans bg-gradient-to-b from-black to-indigo-900 h-screen`;
+    `font-sans bg-black bg-gradient-to-b from-black to-indigo-900 min-h-full`;
   const ssr = renderSSR(<Layout game={state.game} />);
   const { body, head, footer } = Helmet.SSR(ssr);
   const styleTag = getStyleTag(sheet);
 
   return html`<!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" class="${bodyClass}">
       <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -71,7 +71,7 @@ export const render = (state: State) => {
         <script async src="/scripts/events.js"></script>
         ${lr ? <script async src="/livereload.js"></script> : ""}
       </head>
-      <body class="${bodyClass}">
+      <body>
         ${body}
         ${footer.join("\n")}
       </body>

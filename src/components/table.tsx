@@ -11,7 +11,7 @@ const Hall = (props: { game: Game }) => (
     <ul>
       {props.game.players.map((p) => <li>{p.id}</li>)}
     </ul>
-    <Button data-event-type="start">Start</Button>
+    <Button data-event-type="start">Start mesa</Button>
   </div>
 );
 
