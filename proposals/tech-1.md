@@ -43,7 +43,7 @@ Main user interfaces
 
 ## Game mechanics
 
-Mesa.land is a deck building game. At each new game, 10 types of cards are
+mesa.land is a deck building game. At each new game, 10 types of cards are
 selected to create a unique combination. Every player starts with the same set
 of cards — 7 moneys, 3 wins — and have the same options at the start of each
 turn — draw 5 cards, then play 1 action, then use 1 buy to purchase a card from

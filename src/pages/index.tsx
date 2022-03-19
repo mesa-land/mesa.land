@@ -7,12 +7,12 @@ export const Home = () => (
 
     <div class={tw`text-lg`}>
       <p>
-        Mesa.land is a community-driven, extensible card game that's created by
+        mesa.land is a community-driven, extensible card game that's created by
         gamers, for gamers, like you.
       </p>
 
       <p>
-        The Mesa.land engine basic set of rules is simple, but the game
+        The mesa.land engine basic set of rules is simple, but the game
         possibilities are infinite thanks to user-created cards.
       </p>
 

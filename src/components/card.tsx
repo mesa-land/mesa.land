@@ -2,6 +2,7 @@
 import { tw } from "../deps.ts";
 
 import { CardState } from "../std/card.ts";
+import { Button } from "./button.tsx";
 
 export const Card = (
   props: {
@@ -12,12 +13,21 @@ export const Card = (
   },
 ) => (
   <div
-    class={tw`bg-gray-200 p-2 mb-2 ml-1 mr-1 rounded-lg text-gray-800` +
+    class={tw
+      `relative bg-gray-200 p-3 mb-2 ml-0 mr-1 rounded-lg border-solid border-indigo-700 text-gray-800` +
       " card-c"}
-    style="width: 140px;"
+    style="width: 130px;"
   >
-    {props.showQuantity && <span>Qty: {props.card.inSupply}</span>}
-    <h2>{props.card.title}</h2>
+    {props.showQuantity && (
+      <span
+        class={tw
+          `absolute border-white border-solid rounded-full bg-red-500 text-sm text-white font-bold p-2`}
+        style="width: 17px; top: -5px; right: -5px; text-align: center;"
+      >
+        {props.card.inSupply}
+      </span>
+    )}
+    <h3 class={tw`mt-0`}>{props.card.title}</h3>
     {/* <img src={props.card.image} /> */}
     <p>{props.card.description}</p>
     <div>
@@ -32,14 +42,14 @@ export const Card = (
 
     <p>Costs: {props.card.cost}</p>
     {props.showBuy && (
-      <button data-card-id={props.card.id} data-event-type="buy">
+      <Button data-card-id={props.card.id} data-event-type="buy">
         Buy
-      </button>
+      </Button>
     )}
     {props.showPlay && (props.card.isAction || props.card.coinValue !== 0) && (
-      <button data-card-id={props.card.id} data-event-type="play">
+      <Button data-card-id={props.card.id} data-event-type="play">
         Play
-      </button>
+      </Button>
     )}
   </div>
 );

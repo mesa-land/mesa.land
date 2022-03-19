@@ -7,8 +7,8 @@ import { Button } from "./button.tsx";
 
 const Hall = (props: { game: Game }) => (
   <div id="waiting-hall">
-    <span>Players:</span>
-    <ul>
+    <span>Players</span>
+    <ul class={tw`my-4`} style="padding-inline-start: 1em;">
       {props.game.players.map((p) => <li>{p.id}</li>)}
     </ul>
     <Button data-event-type="start">Start mesa</Button>
@@ -17,7 +17,7 @@ const Hall = (props: { game: Game }) => (
 
 const Supply = (props: { game: Game }) => (
   <div id="table-supply">
-    <h2>Supply</h2>
+    <h2 class={tw`mt-0`}>Supply</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getCoinsAndWins().map((c: CardState) => (
         <Card card={c} showQuantity showBuy />
@@ -33,7 +33,7 @@ const Supply = (props: { game: Game }) => (
 
 const Player = (props: { game: Game }) => (
   <div id="player-table">
-    <h2>In play:</h2>
+    <h2>In play</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getInPlay().map((c: CardState) => (
         <Card
@@ -41,7 +41,7 @@ const Player = (props: { game: Game }) => (
         />
       ))}
     </div>
-    <h2>My discard:</h2>
+    <h2>Discard</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getDiscard().map((c: CardState) => (
         <Card
@@ -50,7 +50,7 @@ const Player = (props: { game: Game }) => (
         />
       ))}
     </div>
-    <h2>My hand:</h2>
+    <h2>Hand</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getHand().map((c: CardState) => <Card card={c} showPlay />)}
     </div>
@@ -79,12 +79,12 @@ export const Table = (props: { game: Game }) => {
           `border-solid border-b border-x-0 border-t-0 border-gray-400 text-gray-400 p-2`}
       >
         <span>
-          Mesa:{" "}
+          mesa:{" "}
           <a class={tw`underline text-purple-500`} href={"/m/" + props.game.id}>
             {props.game.id}
           </a>
         </span>
-        <span class={tw`ml-10`}>Status: {props.game.status}</span>
+        <span class={tw`ml-10`}>status: {props.game.status}</span>
       </div>
       <div
         class={tw`p-6 b1 `}
