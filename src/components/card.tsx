@@ -12,7 +12,7 @@ export const Card = (
   },
 ) => (
   <div
-    class={tw`bg-gray-200 p-2 mb-2 ml-1 mr-1 rounded-lg` +
+    class={tw`bg-gray-200 p-2 mb-2 ml-1 mr-1 rounded-lg text-gray-800` +
       " card-c"}
     style="width: 140px;"
   >

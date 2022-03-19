@@ -2,15 +2,13 @@
 import { tw } from "../deps.ts";
 
 export const Header = () => (
-  <>
-    <div class={tw`text-white flex flex-row align-middle`}>
-      <img
-        src="/mesa-logo.png"
-        style={{ width: "40px", marginRight: "10px", display: "inline" }}
-      >
-      </img>
-      <h1 class={tw`m-0 inline`}>Mesa.land</h1>
-    </div>
-    <hr />
-  </>
+  <div class={tw`text-white flex flex-row align-middle`}>
+    <img
+      src="/mesa-logo.png"
+      style={{ width: "40px", marginRight: "10px", display: "inline" }}
+      class={tw`border-1 border-solid border-white rounded-md`}
+    >
+    </img>
+    <h1 class={tw`m-0 ml-2 inline`}>mesa.land</h1>
+  </div>
 );

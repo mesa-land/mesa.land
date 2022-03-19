@@ -3,6 +3,7 @@ import { tw } from "../deps.ts";
 import { Card } from "./card.tsx";
 import { CardState } from "../std/card.ts";
 import { Game, GameStatus } from "../std/game.ts";
+import { Button } from "./button.tsx";
 
 const Hall = (props: { game: Game }) => (
   <div id="waiting-hall">
@@ -10,7 +11,7 @@ const Hall = (props: { game: Game }) => (
     <ul>
       {props.game.players.map((p) => <li>{p.id}</li>)}
     </ul>
-    <button data-event-type="start">Start</button>
+    <Button data-event-type="start">Start</Button>
   </div>
 );
 
@@ -71,15 +72,29 @@ export const Table = (props: { game: Game }) => {
     <div
       id="table-component"
       class={tw
-        `bg-white bg-opacity-50 rounded-lg pt-6 mt-4 p-4 overflow-scroll h-[80vh]`}
+        `flex-row my-6 rounded-lg text-white border-solid border-1 border-gray-400`}
     >
-      <span>Table ID: {props.game.id}</span>
-      <span>Status: {props.game.status}</span>
-      {props.game.status === GameStatus.WAITING
-        ? <Hall game={props.game} />
-        : props.game.status === GameStatus.PLAYING
-        ? <GameTable game={props.game} />
-        : <Results />}
+      <div
+        class={tw
+          `border-solid border-b border-x-0 border-t-0 border-gray-400 text-gray-400 p-2`}
+      >
+        <span>
+          Mesa:{" "}
+          <a class={tw`underline text-purple-500`} href={"/m/" + props.game.id}>
+            {props.game.id}
+          </a>
+        </span>
+        <span class={tw`ml-10`}>Status: {props.game.status}</span>
+      </div>
+      <div
+        class={tw`p-6 b1 `}
+      >
+        {props.game.status === GameStatus.WAITING
+          ? <Hall game={props.game} />
+          : props.game.status === GameStatus.PLAYING
+          ? <GameTable game={props.game} />
+          : <Results />}
+      </div>
     </div>
   );
 };

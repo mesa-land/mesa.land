@@ -58,7 +58,7 @@ export const render = (state: State) => {
       <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta property="og:title" content="Mesa.land">
+        <meta property="og:title" content="mesa.land">
         <meta name="description" content="Play and create amazing online card games!">
         <meta property="og:description" content="Play and create amazing online card games!">
         <meta property="og:image" content="/mesa-label.png">
