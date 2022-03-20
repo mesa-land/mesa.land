@@ -80,11 +80,25 @@ export const Table = (props: { game: Game }) => {
       >
         <span>
           mesa:{" "}
-          <a class={tw`underline text-purple-500`} href={"/m/" + props.game.id}>
+          <a
+            class={tw`underline text-purple-500`}
+            href={"/m/" + props.game.id}
+          >
             {props.game.id}
           </a>
+          {props.game.status === GameStatus.WAITING && (
+            <span class={tw`ml-2`}>({props.game.status})</span>
+          )}
         </span>
-        <span class={tw`ml-10`}>status: {props.game.status}</span>
+        {props.game.status === GameStatus.PLAYING &&
+          (
+            <span class={tw`ml-2`}>
+              phase:{" "}
+              <strong class={tw`uppercase text-purple-500`}>
+                {props.game.phase}
+              </strong>
+            </span>
+          )}
       </div>
       <div
         class={tw`p-6 b1 `}

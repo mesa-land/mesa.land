@@ -35,6 +35,11 @@ export enum GameStatus {
   FINISHED = "finished",
 }
 
+export enum TurnPhase {
+  ACTION = "action",
+  BUY = "buy",
+}
+
 export class Game {
   public currentPlayerId?: string;
   public turn: number = 0;
@@ -42,6 +47,7 @@ export class Game {
   public inPlay: Array<CardId> = [];
   public players: Array<Player> = [];
   public status: GameStatus = GameStatus.WAITING;
+  public phase: TurnPhase = TurnPhase.ACTION;
 
   private log: Array<MesaEvent> = [];
   private cards: Record<CardId, CardState> = {};
@@ -174,6 +180,11 @@ export class Game {
 
   public startTurn(num: number) {
     this.turn = num;
+    if (this.playerHasActions()) {
+      this.phase = TurnPhase.ACTION;
+    } else {
+      this.phase = TurnPhase.BUY;
+    }
   }
 
   public endTurn() {
@@ -241,6 +252,10 @@ export class Game {
     });
 
     return hand;
+  }
+
+  public playerHasActions() {
+    return this.player().hand.some((h) => this.cards[h].isAction);
   }
 
   public playerWins() {
