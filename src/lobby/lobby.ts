@@ -7,7 +7,7 @@ import { SeedRound } from "../x/alpha/actions/seed-round.ts";
 import { parseMesaEvent } from "../std/events.ts";
 import { renderTable } from "../pages/_app.tsx";
 
-const alphaTableCards: Set<CardState> = new Set([
+const alphaGameCards: Set<CardState> = new Set([
   CoinCard(1),
   CoinCard(2),
   CoinCard(3),
@@ -18,36 +18,47 @@ const alphaTableCards: Set<CardState> = new Set([
   SeedRound,
 ]);
 
-const alpha = new Game("alpha", alphaTableCards, 2);
-
 const users = new Map<string, WebSocket>();
+const games = new Map<string, Game>();
 
-export function getTableStateById(id: string) {
-  return alpha;
+export function getGameById(id: string) {
+  let game = games.get(id);
+  if (game) {
+    return game;
+  }
+  game = new Game(id, alphaGameCards, 2);
+  games.set(id, game);
+  return game;
 }
 
 interface WSEvent extends Event {
   data?: any;
 }
 
-export function handleSocket(ws: WebSocket) {
+export function handleSocket(
+  ws: WebSocket,
+  gameId: string,
+  playerId: string = crypto.randomUUID(),
+) {
   // Register user connection
-  const userId = crypto.randomUUID();
-  users.set(userId, ws);
+  users.set(playerId, ws);
+  const game = getGameById(gameId);
 
   // Join game when user connects
   ws.onopen = (e: Event) => {
-    console.log("connected to", userId);
-    alpha.joinGame(userId);
-    ws.send(renderTable(alpha));
+    console.log(`[${gameId}] ${playerId}: connected`);
+    game.join(playerId);
+    const { html, css } = renderTable(game);
+    ws.send(JSON.stringify({ html, css, playerId }));
   };
 
   ws.onmessage = (e: WSEvent) => {
-    console.log("got message from", userId);
+    console.log(`[${gameId}] ${playerId}: ${e.data}`);
     const mesaEvent = parseMesaEvent(e.data);
-    mesaEvent.playerId = userId;
-    alpha.publish(mesaEvent);
-    ws.send(renderTable(alpha));
+    mesaEvent.playerId = playerId;
+    game.publish(mesaEvent);
+    const { html, css } = renderTable(game);
+    ws.send(JSON.stringify({ html, css, playerId }));
   };
 }
 

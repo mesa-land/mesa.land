@@ -39,10 +39,10 @@ export const renderTable = (game: Game) => {
   split.pop();
   const css = split.map((r) => r + "}");
 
-  return JSON.stringify({
+  return {
     html,
     css,
-  });
+  };
 };
 
 export const render = (state: State) => {

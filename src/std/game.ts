@@ -63,7 +63,7 @@ export class Game {
     });
   }
 
-  public joinGame(playerId: string) {
+  public join(playerId: string) {
     console.log("Join game", playerId);
     if (!this.players.find((p) => p.id === playerId)) {
       this.players.push(new Player(playerId));
@@ -71,7 +71,7 @@ export class Game {
   }
 
   // Start game with current players
-  public startGame() {
+  public start() {
     if (this.players.length === 0) {
       throw new Error("No players have joined.");
     }
@@ -131,7 +131,7 @@ export class Game {
     const player = this.players.find((p) => p.id === event.playerId) as Player;
 
     if (event.type === MesaEventType.START) {
-      this.startGame();
+      this.start();
     }
     if (event.type === MesaEventType.PLAY) {
       this.inPlay.push(event.cardId as CardId);

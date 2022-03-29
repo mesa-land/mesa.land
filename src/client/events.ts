@@ -1,7 +1,13 @@
 window.addEventListener("load", () => {
+  const path = location.pathname.split("/");
+  if (path[1] !== "m" || !path[2]) {
+    return;
+  }
+
+  const tableId = path[2];
   let address = location.host === "mesa.land"
-    ? "wss://mesa.land/ws"
-    : "ws://" + location.host + "/ws";
+    ? `wss://mesa.land/ws/${tableId}`
+    : "ws://" + location.host + `/ws/${tableId}`;
   let ws = new WebSocket(address);
 
   const onClick = (e: any) => {
@@ -21,8 +27,12 @@ window.addEventListener("load", () => {
 
   ws.onmessage = (e) => {
     console.log("ws:", e);
-    const event: { html: string; css: Array<string> } = JSON.parse(e.data);
+    const event: { html: string; css: Array<string>; playerId: string } = JSON
+      .parse(e.data);
 
+    if (event.playerId) {
+      document.cookie = `mesaPlayer=${event.playerId};path=/`;
+    }
     const scrollTop = document.getElementById("table-component")?.scrollTop;
     const div = document.createElement("div");
     div.innerHTML = event.html;

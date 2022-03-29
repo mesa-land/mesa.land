@@ -13,7 +13,7 @@ import {
 } from "./deps.ts";
 
 import { render } from "./pages/_app.tsx";
-import { getTableStateById, handleSocket } from "./lobby/lobby.ts";
+import { getGameById, handleSocket } from "./lobby/lobby.ts";
 
 const PORT = parseInt(Deno.env.get("PORT") || "8080");
 const __dirname = new URL(".", import.meta.url).pathname;
@@ -92,9 +92,12 @@ router.get("/_r", async (ctx) => {
 });
 
 // Handle game websocket connection
-router.get("/ws", async (ctx) => {
+router.get("/ws/:id", async (ctx) => {
+  const playerId = await ctx.cookies.get("mesaPlayer");
+  console.log("mesaPlayer", playerId);
   const sock = await ctx.upgrade();
-  handleSocket(sock);
+  const gameId = ctx.params?.id;
+  handleSocket(sock, gameId, playerId);
 });
 
 // Handle main route
@@ -107,12 +110,12 @@ router.get("/", (context) => {
 });
 
 // Handle table route
-router.get("/m/alpha", (context) => {
+router.get("/m/:tableId", (context) => {
   const { timeStart, timeEnd, timeSync } = context.state;
   console.log(">>>", context.request.url.pathname);
 
   timeStart("fetch");
-  const alphaTable = getTableStateById("alpha");
+  const alphaTable = getGameById("alpha");
   timeEnd("fetch");
 
   timeSync("render", () => {
