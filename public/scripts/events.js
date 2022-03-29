@@ -6,8 +6,8 @@ window.addEventListener("load", () => {
     return;
   }
 
-  const tableId = path[2];
-  let address = location.host === "mesa.land" ? `wss://mesa.land/ws/${tableId}` : "ws://" + location.host + `/ws/${tableId}`;
+  const gameId = path[2];
+  let address = location.host === "mesa.land" ? `wss://mesa.land/ws/${gameId}` : "ws://" + location.host + `/ws/${gameId}`;
   let ws = new WebSocket(address);
 
   const onClick = e => {

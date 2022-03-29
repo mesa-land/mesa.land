@@ -94,7 +94,6 @@ router.get("/_r", async (ctx) => {
 // Handle game websocket connection
 router.get("/ws/:id", async (ctx) => {
   const playerId = await ctx.cookies.get("mesaPlayer");
-  console.log("mesaPlayer", playerId);
   const sock = await ctx.upgrade();
   const gameId = ctx.params?.id;
   handleSocket(sock, gameId, playerId);
@@ -110,16 +109,17 @@ router.get("/", (context) => {
 });
 
 // Handle table route
-router.get("/m/:tableId", (context) => {
+router.get("/m/:id", (context) => {
   const { timeStart, timeEnd, timeSync } = context.state;
+  const gameId = context.params?.id;
   console.log(">>>", context.request.url.pathname);
 
   timeStart("fetch");
-  const alphaTable = getGameById("alpha");
+  const game = getGameById(gameId);
   timeEnd("fetch");
 
   timeSync("render", () => {
-    context.response.body = render({ game: alphaTable });
+    context.response.body = render({ game });
   });
 });
 
