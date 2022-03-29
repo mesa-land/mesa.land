@@ -54,6 +54,14 @@ export const moves = {
       quantity,
     };
   },
+
+  gainBuys(target: TargetPlayer, quantity: number): MesaEvent {
+    return {
+      type: MesaEventType.GAIN_BUY,
+      target,
+      quantity,
+    };
+  },
 };
 
 export type GameMoves = typeof moves;

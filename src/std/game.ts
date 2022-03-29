@@ -119,26 +119,41 @@ export class Game {
     });
 
     this.status = GameStatus.PLAYING;
+
     // Start first turn
-    this.startTurn(0);
+    this.publish({
+      type: MesaEventType.GAIN_ACTION,
+      playerId: this.currentPlayerId,
+      quantity: 1,
+    });
+    this.publish({
+      type: MesaEventType.GAIN_BUY,
+      playerId: this.currentPlayerId,
+      quantity: 1,
+    });
+    this.nextPhase();
   }
 
   // Adds a new event to the event log and computes state changes
   public publish(event: MesaEvent) {
     console.log("publishing event", event);
-
-    const card = this.cards[event.cardId!];
+    const { cardId } = event as { cardId: string };
+    const card = this.cards[cardId];
     const player = this.players.find((p) => p.id === event.playerId) as Player;
 
     if (event.type === MesaEventType.START) {
       this.start();
     }
     if (event.type === MesaEventType.PLAY) {
-      this.inPlay.push(event.cardId as CardId);
-      player.hand.splice(player.hand.indexOf(event.cardId as CardId), 1);
+      this.inPlay.push(cardId);
+      player.hand.splice(player.hand.indexOf(cardId), 1);
       if (card.isAction) {
         // TODO card.onPlay()
         console.log("Action played", card.title);
+        if (!this.playerHasActionsInHand()) {
+          // End action phase
+          this.phase = TurnPhase.BUY;
+        }
       }
     }
     if (event.type === MesaEventType.BUY) {
@@ -153,6 +168,10 @@ export class Game {
           quantity: 1,
         });
       }
+      if (this.player().buys == 0) {
+        // End buy phase
+        this.nextPhase();
+      }
     }
     if (event.type === MesaEventType.GAIN_CARD) {
       for (let i = 0; i < event.quantity!; i++) {
@@ -161,6 +180,12 @@ export class Game {
           card.inSupply--;
         }
       }
+    }
+    if (event.type === MesaEventType.GAIN_ACTION) {
+      this.player().actions += event.quantity!;
+    }
+    if (event.type === MesaEventType.GAIN_BUY) {
+      this.player().buys += event.quantity!;
     }
     if (event.type === MesaEventType.SHUFFLE) {
       const newDeck = shuffle(player.discard);
@@ -178,22 +203,55 @@ export class Game {
     this.log.push(event);
   }
 
-  public startTurn(num: number) {
-    this.turn = num;
-    if (this.playerHasActions()) {
+  public nextPhase() {
+    console.log("nextPhase", this.player());
+    if (this.player().actions > 0 && this.playerHasActionsInHand()) {
       this.phase = TurnPhase.ACTION;
-    } else {
+    } else if (this.player().buys > 0) {
       this.phase = TurnPhase.BUY;
+    } else {
+      // cleanup phase
+      const remainingDeck = this.player().deck.length;
+      this.publish({
+        type: MesaEventType.DRAW,
+        playerId: this.currentPlayerId,
+        quantity: Math.min(remainingDeck, 5),
+      });
+      if (remainingDeck < 5) {
+        this.publish({
+          type: MesaEventType.SHUFFLE,
+          playerId: this.currentPlayerId,
+        });
+        this.publish({
+          type: MesaEventType.DRAW,
+          playerId: this.currentPlayerId,
+          quantity: 5 - remainingDeck,
+        });
+      }
+      // next player
+      const playerId = this.nextPlayerId();
+      this.currentPlayerId = playerId;
+      this.publish({
+        type: MesaEventType.GAIN_ACTION,
+        playerId,
+        quantity: 1,
+      });
+      this.publish({
+        type: MesaEventType.GAIN_BUY,
+        playerId,
+        quantity: 1,
+      });
+      this.turn++;
     }
-  }
-
-  public endTurn() {
-    // TODO
-    this.startTurn(this.turn + 1);
   }
 
   public player(): Player {
     return this.players.find((p) => p.id === this.currentPlayerId) as Player;
+  }
+
+  private nextPlayerId(): string {
+    const i = this.players.findIndex((p) => p.id === this.currentPlayerId);
+    return this.players[(i + 1) % this.players.length].id;
   }
 
   public getCoinsAndWins(): Array<CardState> {
@@ -254,11 +312,12 @@ export class Game {
     return hand;
   }
 
-  public playerHasActions() {
+  public playerHasActionsInHand() {
     return this.player().hand.some((h) => this.cards[h].isAction);
   }
 
   public playerWins() {
+    // TODO: count hand and discard
     return this.player().deck.reduce(
       (acc, val) => (acc + this.cards[val].winValue),
       0,

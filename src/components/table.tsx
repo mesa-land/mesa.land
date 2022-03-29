@@ -99,6 +99,12 @@ export const Table = (props: { game: Game }) => {
               </strong>
             </span>
           )}
+        {props.game.currentPlayerId && (
+          <span class={tw`ml-2`}>
+            actions:{props.game.player().actions}{" "}
+            buys:{props.game.player().buys}
+          </span>
+        )}
       </div>
       <div
         class={tw`p-6 b1 `}
