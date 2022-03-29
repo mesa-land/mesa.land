@@ -10,6 +10,8 @@ export enum MesaEventType {
   GAIN_CARD = "gainCard",
   SHUFFLE = "shuffle",
   TRASH = "trash",
+  NEXT = "next",
+  CLEANUP = "cleanup",
 }
 
 export enum TargetPlayer {

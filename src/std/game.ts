@@ -21,6 +21,28 @@ function shuffle<T>(array: Array<T>): Array<T> {
   return array;
 }
 
+function sortHand(
+  cards: Record<string, CardState>,
+  hand: Array<string>,
+): Array<string> {
+  return hand.sort((a, b) => {
+    let aUtility = 0;
+    let bUtility = 0;
+    if (cards[a].isAction) {
+      aUtility += 10;
+    }
+    if (cards[b].isAction) {
+      bUtility += 10;
+    }
+    aUtility += cards[a].cost;
+    bUtility += cards[b].cost;
+    aUtility -= cards[a].winValue;
+    bUtility -= cards[b].winValue;
+
+    return aUtility - bUtility;
+  });
+}
+
 export type GameProps = {
   id: string;
   supply: Array<CardState>;
@@ -160,15 +182,16 @@ export class Game {
       const cost = card.coinValue;
       const coins = this.playerCoins();
       if (coins >= cost) {
-        this.inPlay.splice(0, this.inPlay.length);
+        player.discard.push(...this.inPlay.splice(0, this.inPlay.length));
         this.publish({
           cardId: event.cardId,
           type: MesaEventType.GAIN_CARD,
           playerId: player.id,
           quantity: 1,
         });
+        player.buys--;
       }
-      if (this.player().buys == 0) {
+      if (player.buys == 0) {
         // End buy phase
         this.nextPhase();
       }
@@ -182,10 +205,10 @@ export class Game {
       }
     }
     if (event.type === MesaEventType.GAIN_ACTION) {
-      this.player().actions += event.quantity!;
+      player.actions += event.quantity!;
     }
     if (event.type === MesaEventType.GAIN_BUY) {
-      this.player().buys += event.quantity!;
+      player.buys += event.quantity!;
     }
     if (event.type === MesaEventType.SHUFFLE) {
       const newDeck = shuffle(player.discard);
@@ -199,6 +222,30 @@ export class Game {
           player.hand.push(topDeck);
         }
       }
+      sortHand(this.cards, player.hand);
+    }
+    if (event.type === MesaEventType.CLEANUP) {
+      player.discard.push(...player.hand.splice(0, player.hand.length));
+      const remainingDeck = player.deck.length;
+      this.publish({
+        type: MesaEventType.DRAW,
+        playerId: player.id,
+        quantity: Math.min(remainingDeck, 5),
+      });
+      if (remainingDeck < 5) {
+        this.publish({
+          type: MesaEventType.SHUFFLE,
+          playerId: player.id,
+        });
+        this.publish({
+          type: MesaEventType.DRAW,
+          playerId: player.id,
+          quantity: 5 - remainingDeck,
+        });
+      }
+      player.actions = 0;
+      player.buys = 0;
+      player.coins = 0;
     }
     this.log.push(event);
   }
@@ -211,23 +258,10 @@ export class Game {
       this.phase = TurnPhase.BUY;
     } else {
       // cleanup phase
-      const remainingDeck = this.player().deck.length;
       this.publish({
-        type: MesaEventType.DRAW,
+        type: MesaEventType.CLEANUP,
         playerId: this.currentPlayerId,
-        quantity: Math.min(remainingDeck, 5),
       });
-      if (remainingDeck < 5) {
-        this.publish({
-          type: MesaEventType.SHUFFLE,
-          playerId: this.currentPlayerId,
-        });
-        this.publish({
-          type: MesaEventType.DRAW,
-          playerId: this.currentPlayerId,
-          quantity: 5 - remainingDeck,
-        });
-      }
       // next player
       const playerId = this.nextPlayerId();
       this.currentPlayerId = playerId;
@@ -247,6 +281,14 @@ export class Game {
 
   public player(): Player {
     return this.players.find((p) => p.id === this.currentPlayerId) as Player;
+  }
+
+  public playerCanBuy(cardId: string): boolean {
+    const card = this.cards[cardId];
+    const player = this.player();
+    const cost = card.cost;
+    const coins = this.playerCoins();
+    return player.buys > 0 && cost <= coins;
   }
 
   private nextPlayerId(): string {

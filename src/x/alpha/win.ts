@@ -2,14 +2,13 @@ import { CardState } from "../../std/card.ts";
 
 const oneWin = {
   id: "1w",
-  quantity: 20,
   title: "1 Win",
   image: "/cards/1-win.png",
   isAction: false,
   winValue: 1,
   coinValue: 0,
   cost: 2,
-  inSupply: 10,
+  inSupply: 30,
 };
 
 const threeWins = {
@@ -21,7 +20,7 @@ const threeWins = {
   winValue: 3,
   coinValue: 0,
   cost: 5,
-  inSupply: 10,
+  inSupply: 12,
 };
 
 const sixWins = {
@@ -33,7 +32,7 @@ const sixWins = {
   winValue: 6,
   coinValue: 0,
   cost: 8,
-  inSupply: 10,
+  inSupply: 12,
 };
 
 export const WinCard = (value: 1 | 3 | 6): CardState => {

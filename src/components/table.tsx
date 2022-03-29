@@ -20,12 +20,22 @@ const Supply = (props: { game: Game }) => (
     <h2 class={tw`mt-0`}>Supply</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getCoinsAndWins().map((c: CardState) => (
-        <Card card={c} showQuantity showBuy />
+        <Card
+          card={c}
+          showQuantity
+          showBuy
+          canBuy={props.game.playerCanBuy(c.id)}
+        />
       ))}
     </div>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
       {props.game.getActions().map((c: CardState) => (
-        <Card card={c} showQuantity showBuy />
+        <Card
+          card={c}
+          showQuantity
+          showBuy
+          canBuy={props.game.playerCanBuy(c.id)}
+        />
       ))}
     </div>
   </div>
@@ -46,7 +56,6 @@ const Player = (props: { game: Game }) => (
       {props.game.getDiscard().map((c: CardState) => (
         <Card
           card={c}
-          showPlay
         />
       ))}
     </div>
@@ -101,8 +110,8 @@ export const Table = (props: { game: Game }) => {
           )}
         {props.game.currentPlayerId && (
           <span class={tw`ml-2`}>
-            actions:{props.game.player().actions}{" "}
-            buys:{props.game.player().buys}
+            actions: {props.game.player().actions} buys:{" "}
+            {props.game.player().buys} coins: {props.game.playerCoins()}
           </span>
         )}
       </div>

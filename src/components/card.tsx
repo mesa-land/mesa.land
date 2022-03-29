@@ -10,6 +10,7 @@ export const Card = (
     showQuantity?: boolean;
     showBuy?: boolean;
     showPlay?: boolean;
+    canBuy?: boolean;
   },
 ) => (
   <div
@@ -39,11 +40,14 @@ export const Card = (
       {props.card.winValue !== 0 && <span>Worth {props.card.winValue} win
       </span>}
     </div>
-
-    <p>Costs: {props.card.cost}</p>
+    <br />
     {props.showBuy && (
-      <Button data-card-id={props.card.id} data-event-type="buy">
-        Buy
+      <Button
+        data-card-id={props.card.id}
+        data-event-type="buy"
+        disabled={!props.canBuy}
+      >
+        Buy: ${props.card.cost}
       </Button>
     )}
     {props.showPlay && (props.card.isAction || props.card.coinValue !== 0) && (

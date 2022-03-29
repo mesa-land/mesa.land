@@ -3,8 +3,6 @@ export class Player {
   public buys: number = 0;
   public coins: number = 0;
   public wins: number = 0;
-  public actionsUsed: number = 0;
-  public buysUsed: number = 0;
   // An array of cardIds representing shuffle order
   public deck: Array<string> = [];
   // An array of cardIds representing shuffle order
