@@ -133,8 +133,10 @@ app.use(async (context) => {
 });
 
 // Log hello
-app.addEventListener("listen", () => {
+app.addEventListener("listen", async () => {
   console.log(`Listening on ${cyan(`http://localhost:${PORT}`)}`);
+  const res = await fetch("http://ip-api.com/json/");
+  console.log("Server info:", await res.json());
 });
 
 // Start server
