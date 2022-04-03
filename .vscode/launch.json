@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "name": "http://mesa.land.local:8080/m/alpha",
+      "request": "launch",
+      "url": "http://mesa.land.local:8080/m/alpha"
+    }
+  ]
+}

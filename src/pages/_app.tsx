@@ -21,19 +21,20 @@ setup({ sheet, preflight: false });
 
 export interface State {
   game?: Game;
+  playerId?: string;
 }
 
 const Layout = (props: State) => (
   <div class={tw`p-4 pb-0`}>
     <Header />
     {!props.game && <Home />}
-    {props.game && <TablePage game={props.game} />}
+    {props.game && <TablePage game={props.game} playerId={props.playerId!} />}
   </div>
 );
 
-export const renderTable = (game: Game) => {
+export const renderTable = (game: Game, playerId: string) => {
   sheet.reset();
-  const html = renderSSR(<TablePage game={game!} />);
+  const html = renderSSR(<TablePage game={game!} playerId={playerId!} />);
   const { textContent } = getStyleTagProperties(sheet);
   const split = textContent.split("}");
   split.pop();
@@ -49,7 +50,7 @@ export const render = (state: State) => {
   sheet.reset();
   const bodyClass = tw
     `font-sans bg-black bg-gradient-to-b from-black to-indigo-900 min-h-full`;
-  const ssr = renderSSR(<Layout game={state.game} />);
+  const ssr = renderSSR(<Layout game={state.game} playerId={state.playerId} />);
   const { body, head, footer } = Helmet.SSR(ssr);
   const styleTag = getStyleTag(sheet);
 

@@ -15,6 +15,7 @@ export {
   Helmet,
   renderSSR,
 } from "https://deno.land/x/nano_jsx@v0.0.29/mod.ts";
+export { useState } from "https://deno.land/x/nano_jsx@v0.0.29/hooks/index.ts";
 export {
   bold,
   cyan,

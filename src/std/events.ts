@@ -12,6 +12,7 @@ export enum MesaEventType {
   TRASH = "trash",
   NEXT = "next",
   CLEANUP = "cleanup",
+  RENAME = "rename",
 }
 
 export enum TargetPlayer {
@@ -26,6 +27,7 @@ export type MesaEvent = {
   turn?: number;
   playerId?: string;
   cardId?: CardId;
+  name?: string;
 };
 
 export function parseMesaEvent(json: string): MesaEvent {
@@ -37,6 +39,7 @@ export function parseMesaEvent(json: string): MesaEvent {
     playerId: data.playerId,
     cardId: data.cardId,
     quantity: data.quantity,
+    name: data.name,
   };
 }
 

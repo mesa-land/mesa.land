@@ -9,6 +9,7 @@ export class Player {
   public discard: Array<string> = [];
   // An array of cardIds representing shuffle order
   public hand: Array<string> = [];
+  public name: string = "";
 
   constructor(
     public id: string,

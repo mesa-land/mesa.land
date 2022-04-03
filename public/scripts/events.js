@@ -14,8 +14,14 @@ window.addEventListener("load", () => {
     if (e.target.dataset.eventType) {
       const eventData = {
         type: e.target.dataset.eventType,
-        cardId: e.target.dataset.cardId
+        cardId: e.target.dataset.cardId,
+        name: undefined
       };
+
+      if (e.target.dataset.eventType == "rename") {
+        eventData.name = document.getElementById("mesa-name").value;
+      }
+
       console.log(e.target, eventData);
       ws.send(JSON.stringify(eventData));
     }

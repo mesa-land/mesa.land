@@ -1,15 +1,59 @@
 /** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/
-import { tw } from "../deps.ts";
+import { tw, useState } from "../deps.ts";
 import { Card } from "./card.tsx";
 import { CardState } from "../std/card.ts";
 import { Game, GameStatus } from "../std/game.ts";
 import { Button } from "./button.tsx";
 
-const Hall = (props: { game: Game }) => (
+const NameField = (
+  props: { game: Game; playerId: string; editable?: boolean },
+) => {
+  const isEditing = props.game.player(props.playerId).name === "";
+  return (
+    <div>
+      {props.editable
+        ? (
+          isEditing
+            ? (
+              <div>
+                <input
+                  type="text"
+                  id="mesa-name"
+                  placeholder="Choose your name..."
+                  value={props.game.player(props.playerId).name}
+                  class={tw`m-2 p-1 text-lg rounded-md shadow-md`}
+                />
+                <Button data-event-type="rename">Rename</Button>
+              </div>
+            )
+            : (
+              <div>
+                {props.game.player(props.playerId).name}
+                <Button>Edit</Button>
+              </div>
+            )
+        )
+        : (
+          <span>
+            {props.game.player(props.playerId).name ||
+              props.game.player(props.playerId).id}
+          </span>
+        )}
+    </div>
+  );
+};
+
+const Hall = (props: { game: Game; playerId: string }) => (
   <div id="waiting-hall">
-    <span>Players</span>
+    <span>Players in this mesa:</span>
     <ul class={tw`my-4`} style="padding-inline-start: 1em;">
-      {props.game.players.map((p) => <li>{p.id}</li>)}
+      {props.game.players.map((p) => (
+        <li>
+          {p.id === props.playerId
+            ? <NameField game={props.game} playerId={p.id} editable />
+            : <NameField game={props.game} playerId={p.id} />}
+        </li>
+      ))}
     </ul>
     <Button data-event-type="start">Start mesa</Button>
   </div>
@@ -76,7 +120,8 @@ const GameTable = (props: { game: Game }) => (
 
 const Results = () => <span>You win</span>;
 
-export const Table = (props: { game: Game }) => {
+export const Table = (props: { game: Game; playerId: string }) => {
+  console.log(props.game.players);
   return (
     <div
       id="table-component"
@@ -119,7 +164,7 @@ export const Table = (props: { game: Game }) => {
         class={tw`p-6 b1 `}
       >
         {props.game.status === GameStatus.WAITING
-          ? <Hall game={props.game} />
+          ? <Hall game={props.game} playerId={props.playerId} />
           : props.game.status === GameStatus.PLAYING
           ? <GameTable game={props.game} />
           : <Results />}

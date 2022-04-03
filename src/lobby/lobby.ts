@@ -48,8 +48,15 @@ export function handleSocket(
   ws.onopen = (e: Event) => {
     console.log(`[${gameId}] ${playerId}: connected`);
     game.join(playerId);
-    const { html, css } = renderTable(game);
+    const { html, css } = renderTable(game, playerId);
     ws.send(JSON.stringify({ html, css, playerId }));
+    // update state for other players too
+    users.forEach((user, key) => {
+      if (user !== ws) {
+        const { html, css } = renderTable(game, key);
+        user.send(JSON.stringify({ html, css, playerId }));
+      }
+    });
   };
 
   ws.onmessage = (e: WSEvent) => {
@@ -57,8 +64,15 @@ export function handleSocket(
     const mesaEvent = parseMesaEvent(e.data);
     mesaEvent.playerId = playerId;
     game.publish(mesaEvent);
-    const { html, css } = renderTable(game);
+    const { html, css } = renderTable(game, playerId);
     ws.send(JSON.stringify({ html, css, playerId }));
+    // update state for other players too
+    users.forEach((user, key) => {
+      if (user !== ws) {
+        const { html, css } = renderTable(game, key);
+        user.send(JSON.stringify({ html, css, playerId }));
+      }
+    });
   };
 }
 

@@ -247,6 +247,10 @@ export class Game {
       player.buys = 0;
       player.coins = 0;
     }
+    if (event.type === MesaEventType.RENAME) {
+      player.name = event.name!;
+      console.log("now what", this.players);
+    }
     this.log.push(event);
   }
 
@@ -279,8 +283,8 @@ export class Game {
     }
   }
 
-  public player(): Player {
-    return this.players.find((p) => p.id === this.currentPlayerId) as Player;
+  public player(id = this.currentPlayerId): Player {
+    return this.players.find((p) => p.id === id) as Player;
   }
 
   public playerCanBuy(cardId: string): boolean {

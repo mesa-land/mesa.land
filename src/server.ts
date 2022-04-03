@@ -87,30 +87,32 @@ app.use(async (context, next) => {
 const router = new Router<IServerTimingState>();
 
 // Handle live reload websocket connection
-router.get("/_r", async (ctx) => {
-  await ctx.upgrade();
+router.get("/_r", async (context) => {
+  await context.upgrade();
 });
 
 // Handle game websocket connection
-router.get("/ws/:id", async (ctx) => {
-  const playerId = await ctx.cookies.get("mesaPlayer");
-  const sock = await ctx.upgrade();
-  const gameId = ctx.params?.id;
+router.get("/ws/:id", async (context) => {
+  const playerId = await context.cookies.get("mesaPlayer");
+  const sock = await context.upgrade();
+  const gameId = context.params?.id;
   handleSocket(sock, gameId, playerId);
 });
 
 // Handle main route
-router.get("/", (context) => {
+router.get("/", async (context) => {
   console.log(">>>", context.request.url.pathname);
+  const playerId = await context.cookies.get("mesaPlayer");
 
   context.state.timeSync("render", () => {
-    context.response.body = render({});
+    context.response.body = render({ playerId });
   });
 });
 
 // Handle table route
-router.get("/m/:id", (context) => {
+router.get("/m/:id", async (context) => {
   const { timeStart, timeEnd, timeSync } = context.state;
+  const playerId = await context.cookies.get("mesaPlayer");
   const gameId = context.params?.id;
   console.log(">>>", context.request.url.pathname);
 
@@ -119,7 +121,7 @@ router.get("/m/:id", (context) => {
   timeEnd("fetch");
 
   timeSync("render", () => {
-    context.response.body = render({ game });
+    context.response.body = render({ game, playerId });
   });
 });
 
