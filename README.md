@@ -1,21 +1,55 @@
-# mesa.land
+# Mesa.land
 
-Play and create amazing online card games!
+Mesa is a NFT card game platform. Make your own cards and sell them on OpenSea!
+When you buy a card, you can use it in your next games.
 
-Start now: https://mesa.land
+## Contributing
 
-### Getting started
+The MVP of mesa runs games in-memory in Deno Deploy. The stack is simple by
+declaration:
 
-Install [denon](https://deno.land/x/denon@2.5.0)
+- [Deno](https://deno.land) for server-side TypeScript.
+- [Fresh](https://github.com/lucacasonato/fresh) for components with SSR +
+  hydration.
+- [Tailwind](https://tailwindcss.com/) for styling.
+- WebSockets for game state communication. All game moves are events sent on WS.
+  State change is calculated server-side and broadcast to all players in the
+  game.
 
-Create a `.env` file to enable live reload:
+That's it — for now.
 
-`echo "ENABLE_LIVE_RELOAD=true" > .env`
+## Desired future - May 2022
 
-`denon dev`
+- Browse my card gallery
+- Create your own cards in user interface
+- Mint cards to OpenSea
+- Buy cards from OpenSea
+- Use bought cards in new game
+- Games stored in FaunaDB
 
-### Note about JSX pragma
+## Milestones
 
-`/** @jsxImportSource https://esm.sh/nano-jsx@v0.0.29/lib **/` in every jsx
-component is unfortunately required to deploy on Deno Deploy — they don't
-support import maps yet.
+- End of May: xyz
+- Mid May: xyz
+- End of April: xyz
+- Mid April: xyz
+
+# Usage
+
+### Pre-requisites
+
+- Install fresh
+- Install tailwind
+
+Start the project:
+
+```
+deno run -A --watch main.ts
+```
+
+After adding, removing, or moving a page in the `routes` or directory, or
+adding, removing, or moving an island in the `islands` directory, run:
+
+```
+fresh manifest
+```
