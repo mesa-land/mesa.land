@@ -2,12 +2,20 @@
 
 import { h, tw } from "../deps.client.ts";
 
-export function RoundedButton(props: h.JSX.HTMLAttributes<HTMLButtonElement>) {
+export default function RoundedButton(
+  props: h.JSX.HTMLAttributes<HTMLButtonElement>,
+) {
+  const disabledClass = tw`cursor-not-allowed opacity-50`;
+  const { disabled, ...rest } = props;
   return (
     <button
-      {...props}
+      {...rest}
+      disabled={disabled ? true : undefined}
       class={tw
-        `p-3 border border-transparent rounded-full text-white bg-indigo(600 hover:700) focus:(outline-none ring(2 offset-2 indigo-500)) disabled:(bg-indigo-200 cursor-default)`}
-    />
+        `text-lg bg-purple-800 rounded-md px-4 py-1 text-white shadow-md ` +
+        (props.disabled ? disabledClass : "")}
+    >
+      {props.children}
+    </button>
   );
 }

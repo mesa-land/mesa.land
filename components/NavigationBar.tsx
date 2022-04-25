@@ -19,13 +19,16 @@ export default function NavigationBar(props: { active: string }) {
   ];
 
   return (
-    <nav class={tw`bg(gray-50) py-2 border(t-2 b-2 gray-100)`}>
+    <nav
+      class={tw
+        `antialiased text-slate-200 font-sans bg-black bg-gradient-to-b from-indigo-900 to-black min-h-full py-2 border(t-2 b-2 gray-100)`}
+    >
       <ul class={tw`flex justify-center gap-8 mx-4`}>
         {items.map((item) => (
           <li>
             <a
               href={item.href}
-              class={tw`text-gray-600 hover:underline ${
+              class={tw`text-slate-200 hover:underline ${
                 props.active == item.href ? "font-bold" : ""
               }`}
             >

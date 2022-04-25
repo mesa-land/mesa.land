@@ -1,23 +1,22 @@
 /** @jsx h */
-import { h, IS_BROWSER, useState } from "../deps.client.ts";
+import Body from "../components/Body.tsx";
+import { h, IS_BROWSER, PageProps, useState } from "../deps.client.ts";
 import { MesaEvent } from "../std/events.ts";
+import { Game } from "../std/game.ts";
+import GameIsland from "./GameIsland.tsx";
+
+declare global {
+  interface Window {
+    mesa: any;
+  }
+}
 
 let ws: WebSocket;
 
-export default function Connection(
-  props: { children: any; game: any },
-) {
-  if (!IS_BROWSER) {
-    return props.children(props.game, publishEvent);
-  }
-  const [{ game }, setState] = useState<{ game?: any }>(props.game);
-
-  if (!ws) {
-    ws = connect(props.game.id);
-    ws.onmessage = onWebSocketMessage(setState);
-  }
-
-  return props.children(game ? game : props.game, publishEvent);
+if (IS_BROWSER) {
+  ws = connect("alpha");
+  window.mesa = window.mesa || {};
+  window.mesa.ws = ws;
 }
 
 function connect(gameId: string) {
@@ -33,24 +32,24 @@ function connect(gameId: string) {
   return ws;
 }
 
-function onWebSocketMessage(setState: (state: any) => void) {
+function onWebSocketMessage(setState: (state: Game) => void) {
   return (e: MessageEvent) => {
     console.log("ws:", e);
-    const event: { state: any; css: Array<string>; playerId: string } = JSON
+    const event: { game: Game; css: Array<string>; playerId: string } = JSON
       .parse(e.data);
 
     if (event.playerId) {
+      window.mesa.playerId = event.playerId;
       document.cookie = `mesaPlayer=${event.playerId};path=/`;
     }
 
-    updateCSSRules(event.css);
-    setState({ game: event.state });
+    setState(event.game);
   };
 }
 
 function publishEvent(e: MesaEvent) {
   if (e.type) {
-    console.log(e);
+    console.log("publish:", e);
 
     ws.send(
       JSON.stringify(e),
@@ -58,26 +57,23 @@ function publishEvent(e: MesaEvent) {
   }
 }
 
-function updateCSSRules(css: Array<string>) {
-  // Get the current applied rules
-  const cssRules = document.styleSheets[0].cssRules;
-  for (let i = 0; i < css.length; i++) {
-    const rule = css[i];
-    let match = false;
-    for (let j = 0; j < cssRules.length; j++) {
-      const existingRule = cssRules[j];
-      if (existingRule instanceof CSSStyleRule) {
-        const selectorStart = existingRule.selectorText + "{";
-        // Check if the rule already exists. If so, skip it.
-        if (rule.startsWith(selectorStart)) {
-          match = true;
-          continue;
-        }
-      }
-    }
-    // If rule is not already applied, insert it.
-    if (!match) {
-      document.styleSheets[0].insertRule(rule);
-    }
+export default function Connection(
+  props: PageProps<Game>,
+) {
+  if (!IS_BROWSER) {
+    return (
+      <Body>
+        <GameIsland game={props.data} />
+      </Body>
+    );
   }
+
+  const [game, setState] = useState<Game>(props.data);
+  ws.onmessage = onWebSocketMessage(setState);
+
+  return (
+    <Body>
+      <GameIsland game={game} publishEvent={publishEvent} />
+    </Body>
+  );
 }

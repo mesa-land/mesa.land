@@ -26,10 +26,12 @@ export const handler: Handlers = {
     ws.onopen = () => {
       console.log(`[${gameId}] ${playerId}: connected`);
       game.join(playerId);
+      game.connectedPlayerId = playerId;
       ws.send(JSON.stringify({ game, playerId }));
       // update state for other players too
       users.forEach((user, key) => {
         if (user !== ws) {
+          game.connectedPlayerId = key;
           user.send(JSON.stringify({ game, playerId: key }));
         }
       });
@@ -40,10 +42,12 @@ export const handler: Handlers = {
       const mesaEvent = e.data as MesaEvent;
       mesaEvent.playerId = playerId;
       game.publish(mesaEvent);
+      game.connectedPlayerId = playerId;
       ws.send(JSON.stringify({ game, playerId }));
       // update state for other players too
       users.forEach((user, key) => {
         if (user !== ws) {
+          game.connectedPlayerId = key;
           user.send(JSON.stringify({ game, playerId: key }));
         }
       });

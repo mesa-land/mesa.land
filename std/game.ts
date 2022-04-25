@@ -70,6 +70,7 @@ export class Game {
   public players: Array<Player> = [];
   public status: GameStatus = GameStatus.WAITING;
   public phase: TurnPhase = TurnPhase.ACTION;
+  public connectedPlayerId?: string;
 
   private log: Array<MesaEvent> = [];
   private cards: Record<CardId, CardState> = {};
