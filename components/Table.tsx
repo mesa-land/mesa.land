@@ -3,14 +3,14 @@
 
 import { Fragment, h, tw } from "../deps.client.ts";
 import Card from "./Card.tsx";
-import { CardState } from "../std/card.ts";
-import { Game, GameStatus } from "../std/game.ts";
+import { GameCard } from "../std/GameCard.ts";
+import { GameSel, GameState, GameStatus } from "../std/GameState.ts";
 import Button from "./Button.tsx";
 
 const NameField = (
-  props: { game: Game; playerId: string; editable?: boolean },
+  props: { game: GameState; playerId: string; editable?: boolean },
 ) => {
-  const isEditing = props.game.player(props.playerId).name === "";
+  const isEditing = GameSel.currentPlayer(props.game).name === "";
   return (
     <div>
       {props.editable
@@ -22,7 +22,7 @@ const NameField = (
                   type="text"
                   id="mesa-name"
                   placeholder="Choose your name..."
-                  value={props.game.player(props.playerId).name}
+                  value={GameSel.currentPlayer(props.game).name}
                   class={tw`m-2 p-1 text-lg rounded-md shadow-md`}
                 />
                 <Button data-event-type="rename">Rename</Button>
@@ -30,30 +30,30 @@ const NameField = (
             )
             : (
               <div>
-                {props.game.player(props.playerId).name}
+                {GameSel.currentPlayer(props.game).name}
                 <Button>Edit</Button>
               </div>
             )
         )
         : (
           <span>
-            {props.game.player(props.playerId).name ||
-              props.game.player(props.playerId).id}
+            {props.game.players[props.playerId].name ||
+              props.game.players[props.playerId].id}
           </span>
         )}
     </div>
   );
 };
 
-const Hall = (props: { game: Game; playerId: string }) => (
+const Hall = (props: { game: GameState; playerId: string }) => (
   <div id="waiting-hall">
     <span>Players in this mesa:</span>
     <ul class={tw`my-4`} style="padding-inline-start: 1em;">
-      {props.game.players.map((p) => (
+      {Object.keys(props.game.players).map((pId) => (
         <li>
-          {p.id === props.playerId
-            ? <NameField game={props.game} playerId={p.id} editable />
-            : <NameField game={props.game} playerId={p.id} />}
+          {pId === props.playerId
+            ? <NameField game={props.game} playerId={pId} editable />
+            : <NameField game={props.game} playerId={pId} />}
         </li>
       ))}
     </ul>
@@ -61,37 +61,37 @@ const Hall = (props: { game: Game; playerId: string }) => (
   </div>
 );
 
-const Supply = (props: { game: Game }) => (
+const Supply = (props: { game: GameState }) => (
   <div id="table-supply">
     <h2 class={tw`mt-0`}>Supply</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getCoinsAndWins().map((c: CardState) => (
+      {GameSel.getCoinsAndWins(props.game).map((c: GameCard) => (
         <Card
           card={c}
           showQuantity
           showBuy
-          canBuy={props.game.playerCanBuy(c.id)}
+          canBuy={GameSel.playerCanBuy(props.game, c.id)}
         />
       ))}
     </div>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getActions().map((c: CardState) => (
+      {GameSel.getActions(props.game).map((c: GameCard) => (
         <Card
           card={c}
           showQuantity
           showBuy
-          canBuy={props.game.playerCanBuy(c.id)}
+          canBuy={GameSel.playerCanBuy(props.game, c.id)}
         />
       ))}
     </div>
   </div>
 );
 
-const Player = (props: { game: Game }) => (
+const Player = (props: { game: GameState }) => (
   <div id="player-table">
     <h2>In play</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getInPlay().map((c: CardState) => (
+      {GameSel.getInPlay(props.game).map((c: GameCard) => (
         <Card
           card={c}
         />
@@ -99,7 +99,7 @@ const Player = (props: { game: Game }) => (
     </div>
     <h2>Discard</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getDiscard().map((c: CardState) => (
+      {GameSel.getDiscard(props.game).map((c: GameCard) => (
         <Card
           card={c}
         />
@@ -107,13 +107,15 @@ const Player = (props: { game: Game }) => (
     </div>
     <h2>Hand</h2>
     <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {props.game.getHand().map((c: CardState) => <Card card={c} showPlay />)}
+      {GameSel.getHand(props.game).map((c: GameCard) => (
+        <Card card={c} showPlay />
+      ))}
     </div>
-    <span>Deck: {props.game.player().deck.length}</span>
+    <span>Deck: {GameSel.currentPlayer(props.game).deck.length}</span>
   </div>
 );
 
-const GameTable = (props: { game: Game }) => (
+const GameTable = (props: { game: GameState }) => (
   <>
     <Supply game={props.game} />
     <Player game={props.game} />
@@ -122,7 +124,7 @@ const GameTable = (props: { game: Game }) => (
 
 const Results = () => <span>You win</span>;
 
-export const Table = (props: { game: Game; playerId: string }) => {
+export const Table = (props: { game: GameState; playerId: string }) => {
   console.log(props.game.players);
   return (
     <div
@@ -149,16 +151,17 @@ export const Table = (props: { game: Game; playerId: string }) => {
         {props.game.status === GameStatus.PLAYING &&
           (
             <span class={tw`ml-2`}>
-              phase:{" "}
+              you may:{" "}
               <strong class={tw`uppercase text-purple-500`}>
-                {props.game.phase}
+                {props.game.currentPlayerMoves.join(", ")}
               </strong>
             </span>
           )}
         {props.game.currentPlayerId && (
           <span class={tw`ml-2`}>
-            actions: {props.game.player().actions} buys:{" "}
-            {props.game.player().buys} coins: {props.game.playerCoins()}
+            actions: {GameSel.currentPlayer(props.game).actions} buys:{" "}
+            {GameSel.currentPlayer(props.game).buys} coins:{" "}
+            {GameSel.playerCoins(props.game)}
           </span>
         )}
       </div>

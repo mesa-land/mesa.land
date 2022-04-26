@@ -1,4 +1,4 @@
-import { CardId, draw, shuffle } from "./GameCard.ts";
+import { CardId, draw, shuffle, sortHand } from "./GameCard.ts";
 
 export type PlayerId = string;
 
@@ -29,28 +29,3 @@ export const createPlayer = (playerId: PlayerId): GamePlayer => ({
   hand: [],
   name: "",
 });
-
-export const PlayerFn: Record<string, (player: GamePlayer) => GamePlayer> = {
-  setup(p: GamePlayer) {
-    // 3 wins, 7 coins
-    p.deck = shuffle([
-      "1w",
-      "1w",
-      "1w",
-      "1c",
-      "1c",
-      "1c",
-      "1c",
-      "1c",
-      "1c",
-      "1c",
-    ]);
-    return PlayerFn.newTurn(p);
-  },
-  newTurn(p: GamePlayer) {
-    p.hand = draw(5, p.deck);
-    p.actions = 1;
-    p.buys = 1;
-    return p;
-  },
-};
