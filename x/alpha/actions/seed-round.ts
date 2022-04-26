@@ -1,19 +1,13 @@
-import { CardState } from "../../../std/card.ts";
-import { GameMoves, TargetPlayer } from "../../../std/events.ts";
+import { GameCard } from "../../../std/GameCard.ts";
 
-export const SeedRound = new CardState(
-  "sr",
-  "Seed Round",
-  true,
-  0,
-  0,
-  4,
-  10,
-  "+2 Cards, +1 Action",
-  (moves: GameMoves) => {
-    return [
-      moves.drawCards(TargetPlayer.CURRENT, 2),
-      moves.gainActions(TargetPlayer.CURRENT, 1),
-    ];
-  },
-);
+export const SeedRound: GameCard = {
+  id: "sr",
+  title: "Seed Round",
+  isAction: true,
+  winValue: 0,
+  coinValue: 0,
+  cost: 4,
+  inSupply: 10,
+  description: "+2 Cards, +1 Action",
+  effects: [],
+};

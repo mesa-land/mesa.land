@@ -2,8 +2,9 @@ import { CoinCard } from "./coin.ts";
 import { WinCard } from "./win.ts";
 import { ClickFarmBoost } from "./actions/click-farm-boost.ts";
 import { SeedRound } from "./actions/seed-round.ts";
+import { GameCard } from "../../std/GameCard.ts";
 
-export default new Set([
+const alphaCardList = [
   CoinCard(1),
   CoinCard(2),
   CoinCard(3),
@@ -12,4 +13,11 @@ export default new Set([
   WinCard(6),
   ClickFarmBoost,
   SeedRound,
-]);
+];
+
+const alphaMap = alphaCardList.reduce((map, card) => {
+  map[card.id] = card;
+  return map;
+}, {} as { [id: string]: GameCard });
+
+export default alphaMap;

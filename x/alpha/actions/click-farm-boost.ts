@@ -1,18 +1,13 @@
-import { CardState } from "../../../std/card.ts";
-import { GameMoves, TargetPlayer } from "../../../std/events.ts";
+import { GameCard } from "../../../std/GameCard.ts";
 
-export const ClickFarmBoost = new CardState(
-  "cfa",
-  "Click Farm Boost",
-  true,
-  0,
-  0,
-  3,
-  10,
-  "+2 Actions",
-  (moves: GameMoves) => {
-    return [
-      moves.gainActions(TargetPlayer.CURRENT, 2),
-    ];
-  },
-);
+export const ClickFarmBoost: GameCard = {
+  id: "cfa",
+  title: "Click Farm Boost",
+  isAction: true,
+  winValue: 0,
+  coinValue: 0,
+  cost: 3,
+  inSupply: 10,
+  description: "+2 Actions",
+  effects: [],
+};

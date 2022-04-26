@@ -1,8 +1,7 @@
 /** @jsx h */
 import Body from "../components/Body.tsx";
 import { h, IS_BROWSER, PageProps, useState } from "../deps.client.ts";
-import { MesaEvent } from "../std/events.ts";
-import { Game } from "../std/game.ts";
+import { GameState } from "../std/GameState.ts";
 import GameIsland from "./GameIsland.tsx";
 
 declare global {
@@ -32,12 +31,13 @@ function connect(gameId: string) {
   return ws;
 }
 
-function onWebSocketMessage(setState: (state: Game) => void) {
+function onWebSocketMessage(setState: (state: GameState) => void) {
   return (e: MessageEvent) => {
     console.log("ws:", e);
-    const event: { game: Game; css: Array<string>; playerId: string } = JSON
+    const event: { game: GameState; playerId: string } = JSON
       .parse(e.data);
 
+    window.mesa.game = event.game;
     if (event.playerId) {
       window.mesa.playerId = event.playerId;
       document.cookie = `mesaPlayer=${event.playerId};path=/`;
@@ -47,7 +47,7 @@ function onWebSocketMessage(setState: (state: Game) => void) {
   };
 }
 
-function publishEvent(e: MesaEvent) {
+function publishEvent(e: any) {
   if (e.type) {
     console.log("publish:", e);
 
@@ -58,7 +58,7 @@ function publishEvent(e: MesaEvent) {
 }
 
 export default function Connection(
-  props: PageProps<Game>,
+  props: PageProps<GameState>,
 ) {
   if (!IS_BROWSER) {
     return (
@@ -68,7 +68,7 @@ export default function Connection(
     );
   }
 
-  const [game, setState] = useState<Game>(props.data);
+  const [game, setState] = useState<GameState>(props.data);
   ws.onmessage = onWebSocketMessage(setState);
 
   return (

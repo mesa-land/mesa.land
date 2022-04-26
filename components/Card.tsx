@@ -1,12 +1,12 @@
 /** @jsx h */
 
 import { h, tw } from "../deps.client.ts";
-import { CardState } from "../std/card.ts";
+import { GameCard } from "../std/GameCard.ts";
 import Button from "./Button.tsx";
 
 export default function Card(
   props: {
-    card: CardState;
+    card: GameCard;
     showQuantity?: boolean;
     showBuy?: boolean;
     showPlay?: boolean;

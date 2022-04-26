@@ -1,4 +1,4 @@
-import { CardState } from "../../std/card.ts";
+import { GameCard } from "../../std/GameCard.ts";
 
 const oneWin = {
   id: "1w",
@@ -35,7 +35,7 @@ const sixWins = {
   inSupply: 12,
 };
 
-export const WinCard = (value: 1 | 3 | 6): CardState => {
+export const WinCard = (value: 1 | 3 | 6): GameCard => {
   switch (value) {
     case 1:
       return oneWin;

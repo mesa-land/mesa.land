@@ -43,6 +43,23 @@ export type GameState = {
   log: Array<string>;
 };
 
+export const createGame = (
+  id: string,
+  supply: Record<CardId, GameCard>,
+  numPlayers: number,
+): GameState => ({
+  id,
+  supply,
+  turn: 1,
+  trash: [],
+  inPlay: [],
+  players: {},
+  status: GameStatus.WAITING,
+  numPlayers,
+  log: [],
+  currentPlayerMoves: [],
+});
+
 // Game selectors. Filters and selects game state.
 export const GameSel = {
   currentPlayer(game: GameState): GamePlayer {
@@ -328,4 +345,11 @@ export const GameFn = {
     game.players[playerId].name = name;
     return game;
   },
+};
+
+type GameFunction = typeof GameFn;
+
+export type GameEvent = {
+  GameFn: keyof GameFunction;
+  GameFnArgs: any[];
 };

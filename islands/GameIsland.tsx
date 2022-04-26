@@ -1,11 +1,10 @@
 /** @jsx h */
-import { Table } from "../components/table.tsx";
 import { h, IS_BROWSER } from "../deps.client.ts";
-import { MesaEvent } from "../std/events.ts";
-import { Game } from "../std/game.ts";
+import { GameState } from "../std/GameState.ts";
+import { Table } from "../components/Table.tsx";
 
 export default function GameIsland(
-  props: { game: Game; publishEvent?: (e: MesaEvent) => void },
+  props: { game: GameState; publishEvent?: (e: any) => void },
 ) {
   console.log("rendering game island", props.publishEvent, props.game);
   return (

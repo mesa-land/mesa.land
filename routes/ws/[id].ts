@@ -1,11 +1,11 @@
 import { getGameById } from "../../data/game.ts";
 import { getCookies, Handlers } from "../../deps.server.ts";
-import { MesaEvent } from "../../std/events.ts";
+import { GameEvent, GameFn } from "../../std/GameState.ts";
 
 const users = new Map<string, WebSocket>();
 
 interface WSEvent extends Event {
-  data?: MesaEvent;
+  data?: any;
 }
 
 export const handler: Handlers = {
@@ -20,12 +20,12 @@ export const handler: Handlers = {
     const { socket: ws, response } = Deno.upgradeWebSocket(req);
 
     users.set(playerId, ws);
-    const game = getGameById(gameId);
+    let game = getGameById(gameId);
 
     // Join game when user connects
     ws.onopen = () => {
       console.log(`[${gameId}] ${playerId}: connected`);
-      game.join(playerId);
+      GameFn.join(game, playerId);
       game.connectedPlayerId = playerId;
       ws.send(JSON.stringify({ game, playerId }));
       // update state for other players too
@@ -39,9 +39,9 @@ export const handler: Handlers = {
 
     ws.onmessage = (e: WSEvent) => {
       console.log(`[${gameId}] ${playerId}: ${e.data}`);
-      const mesaEvent = e.data as MesaEvent;
-      mesaEvent.playerId = playerId;
-      game.publish(mesaEvent);
+      const mesaEvent = e.data as GameEvent;
+      const transform = GameFn[mesaEvent.GameFn];
+      game = transform(game, mesaEvent.GameFnArgs[0], mesaEvent.GameFnArgs[1]);
       game.connectedPlayerId = playerId;
       ws.send(JSON.stringify({ game, playerId }));
       // update state for other players too
