@@ -350,7 +350,7 @@ export const GameFn = {
   },
 };
 
-type GameFunction = typeof GameFn;
+export type GameFunction = typeof GameFn;
 
 export type GameEvent = {
   GameFn: keyof GameFunction;

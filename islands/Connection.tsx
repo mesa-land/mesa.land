@@ -1,7 +1,12 @@
 /** @jsx h */
 import Body from "../components/Body.tsx";
 import { h, IS_BROWSER, PageProps, useState } from "../deps.client.ts";
-import { GameState } from "../std/GameState.ts";
+import {
+  GameEvent,
+  GameFn,
+  GameFunction,
+  GameState,
+} from "../std/GameState.ts";
 import GameIsland from "./GameIsland.tsx";
 
 declare global {
@@ -47,14 +52,18 @@ function onWebSocketMessage(setState: (state: GameState) => void) {
   };
 }
 
-function publishEvent(e: any) {
-  if (e.type) {
-    console.log("publish:", e);
-
-    ws.send(
-      JSON.stringify(e),
-    );
+function createClientGameFn(ws: WebSocket): GameFunction {
+  const clientGameFn: Record<string, Function> = {};
+  for (const key in GameFn) {
+    clientGameFn[key] = (...args: any[]) => {
+      ws.send(JSON.stringify({
+        GameFn: key as keyof GameFunction,
+        // Remove GameState from args
+        GameFnArgs: args.slice(1),
+      }));
+    };
   }
+  return clientGameFn as GameFunction;
 }
 
 export default function Connection(
@@ -70,10 +79,11 @@ export default function Connection(
 
   const [game, setState] = useState<GameState>(props.data);
   ws.onmessage = onWebSocketMessage(setState);
+  const clientGameFn = createClientGameFn(ws);
 
   return (
     <Body>
-      <GameIsland game={game} publishEvent={publishEvent} />
+      <GameIsland game={game} clientGameFn={clientGameFn} />
     </Body>
   );
 }

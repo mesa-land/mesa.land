@@ -1,6 +1,7 @@
 import { getGameById } from "../../data/game.ts";
 import { getCookies, Handlers } from "../../deps.server.ts";
 import { GameEvent, GameFn } from "../../std/GameState.ts";
+import { logEvent, logGame } from "../../utils/log.ts";
 
 const users = new Map<string, WebSocket>();
 
@@ -27,6 +28,7 @@ export const handler: Handlers = {
       console.log(`[${gameId}] ${playerId}: connected`);
       GameFn.join(game, playerId);
       game.connectedPlayerId = playerId;
+      logGame(game);
       ws.send(JSON.stringify({ game, playerId }));
       // update state for other players too
       users.forEach((user, key) => {
@@ -38,11 +40,12 @@ export const handler: Handlers = {
     };
 
     ws.onmessage = (e: WSEvent) => {
-      console.log(`[${gameId}] ${playerId}: ${e.data}`);
-      const mesaEvent = e.data as GameEvent;
+      const mesaEvent = JSON.parse(e.data) as GameEvent;
+      logEvent(game, mesaEvent);
       const transform = GameFn[mesaEvent.GameFn];
       game = transform(game, mesaEvent.GameFnArgs[0], mesaEvent.GameFnArgs[1]);
       game.connectedPlayerId = playerId;
+      logGame(game);
       ws.send(JSON.stringify({ game, playerId }));
       // update state for other players too
       users.forEach((user, key) => {

@@ -1,31 +1,54 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
 
-import { Fragment, h, tw } from "../deps.client.ts";
+import { Fragment, h, tw, useState } from "../deps.client.ts";
 import Card from "./Card.tsx";
 import { GameCard } from "../std/GameCard.ts";
-import { GameSel, GameState, GameStatus } from "../std/GameState.ts";
+import {
+  GameFunction,
+  GameSel,
+  GameState,
+  GameStatus,
+} from "../std/GameState.ts";
 import Button from "./Button.tsx";
 
 const NameField = (
-  props: { game: GameState; playerId: string; editable?: boolean },
+  props: {
+    game: GameState;
+    playerId: string;
+    editable?: boolean;
+    clientGameFn?: GameFunction;
+  },
 ) => {
-  const isEditing = GameSel.connectedPlayer(props.game).name === "";
+  const name = GameSel.connectedPlayer(props.game).name;
+  const pId = GameSel.connectedPlayer(props.game).id;
+  const isEmpty = name === "";
+  const [nameInput, setNameInput] = useState(name);
   return (
     <div>
       {props.editable
         ? (
-          isEditing
+          isEmpty
             ? (
               <div>
                 <input
                   type="text"
                   id="mesa-name"
                   placeholder="Choose your name..."
-                  value={GameSel.connectedPlayer(props.game).name}
-                  class={tw`m-2 p-1 text-lg rounded-md shadow-md`}
+                  value={nameInput}
+                  onInput={(e) => {
+                    setNameInput(
+                      (e!.target as HTMLInputElement).value,
+                    );
+                  }}
+                  class={tw`m-2 p-1 text-black text-lg rounded-md shadow-md`}
                 />
-                <Button data-event-type="rename">Rename</Button>
+                <Button
+                  onClick={() =>
+                    props.clientGameFn!.rename(props.game, pId, nameInput)}
+                >
+                  Rename
+                </Button>
               </div>
             )
             : (
@@ -45,14 +68,23 @@ const NameField = (
   );
 };
 
-const Hall = (props: { game: GameState; playerId: string }) => (
+const Hall = (
+  props: { game: GameState; playerId: string; clientGameFn: GameFunction },
+) => (
   <div id="waiting-hall">
     <span>Players in this mesa:</span>
     <ul class={tw`my-4`} style="padding-inline-start: 1em;">
       {Object.keys(props.game.players).map((pId) => (
         <li>
           {pId === props.playerId
-            ? <NameField game={props.game} playerId={pId} editable />
+            ? (
+              <NameField
+                game={props.game}
+                playerId={pId}
+                editable
+                clientGameFn={props.clientGameFn}
+              />
+            )
             : <NameField game={props.game} playerId={pId} />}
         </li>
       ))}
@@ -124,8 +156,9 @@ const GameTable = (props: { game: GameState }) => (
 
 const Results = () => <span>You win</span>;
 
-export const Table = (props: { game: GameState; playerId: string }) => {
-  console.log(props.game.players);
+export const Table = (
+  props: { game: GameState; playerId: string; clientGameFn: GameFunction },
+) => {
   return (
     <div
       id="table-component"
@@ -166,10 +199,16 @@ export const Table = (props: { game: GameState; playerId: string }) => {
         )}
       </div>
       <div
-        class={tw`p-6 b1 `}
+        class={tw`p-6 `}
       >
         {props.game.status === GameStatus.WAITING
-          ? <Hall game={props.game} playerId={props.playerId} />
+          ? (
+            <Hall
+              game={props.game}
+              playerId={props.playerId}
+              clientGameFn={props.clientGameFn}
+            />
+          )
           : props.game.status === GameStatus.PLAYING
           ? <GameTable game={props.game} />
           : <Results />}
