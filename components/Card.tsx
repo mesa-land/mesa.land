@@ -2,6 +2,7 @@
 
 import { h, tw } from "../deps.client.ts";
 import { GameCard } from "../std/GameCard.ts";
+import { GameFunction, GameState } from "../std/GameState.ts";
 import Button from "./Button.tsx";
 
 export default function Card(
@@ -11,6 +12,7 @@ export default function Card(
     showBuy?: boolean;
     showPlay?: boolean;
     canBuy?: boolean;
+    clientGameFn: GameFunction;
   },
 ) {
   return (
@@ -54,7 +56,11 @@ export default function Card(
       )}
       {props.showPlay && (props.card.isAction || props.card.coinValue !== 0) &&
         (
-          <Button data-card-id={props.card.id} data-event-type="play">
+          <Button
+            data-card-id={props.card.id}
+            onClick={() =>
+              props.clientGameFn.play({} as GameState, props.card.id)}
+          >
             Play
           </Button>
         )}

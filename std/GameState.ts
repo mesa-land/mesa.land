@@ -50,7 +50,7 @@ export const createGame = (
 ): GameState => ({
   id,
   supply,
-  turn: 1,
+  turn: 0,
   trash: [],
   inPlay: [],
   players: {},
@@ -192,11 +192,6 @@ export const GameFn = {
     // Set status to PLAYING
     game.status = GameStatus.PLAYING;
 
-    game.currentPlayerMoves = [
-      PlayerMove.BUY,
-      PlayerMove.SKIP,
-    ];
-
     return GameFn.newTurn(game);
   },
   play(game: GameState, cardId: CardId) {
@@ -337,11 +332,17 @@ export const GameFn = {
     p.actions = 1;
     p.buys = 1;
 
-    game.currentPlayerMoves = [
-      PlayerMove.PLAY_ACTION,
-      PlayerMove.BUY,
-      PlayerMove.SKIP,
-    ];
+    game.currentPlayerMoves = [];
+    if (GameSel.playerHasActionsInHand(game)) {
+      game.currentPlayerMoves.push(PlayerMove.PLAY_ACTION);
+    } else {
+      game.currentPlayerMoves.push(...[
+        PlayerMove.PLAY_COIN,
+        PlayerMove.BUY,
+      ]);
+    }
+    game.currentPlayerMoves.push(PlayerMove.SKIP);
+
     return game;
   },
   rename(game: GameState, playerId: string, name: string) {
