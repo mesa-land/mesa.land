@@ -180,12 +180,12 @@ export const GameFn = {
       throw new Error(`Game ${game.id} was already started.`);
     }
 
+    const playerIds = Object.keys(game.players);
     // Select first player
-    game.currentPlayerId =
-      game.players[Math.floor(Math.random() * game.numPlayers)].id;
+    game.currentPlayerId = playerIds[0];
 
     // Distribute initial cards
-    Object.keys(game.players).forEach((playerId) => {
+    playerIds.forEach((playerId) => {
       GameFn.setupPlayer(game, playerId);
     });
 

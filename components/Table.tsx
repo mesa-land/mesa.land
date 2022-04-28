@@ -2,8 +2,6 @@
 /** @jsxFrag Fragment */
 
 import { Fragment, h, tw, useState } from "../deps.client.ts";
-import Card from "./Card.tsx";
-import { GameCard } from "../std/GameCard.ts";
 import {
   GameFunction,
   GameSel,
@@ -11,6 +9,8 @@ import {
   GameStatus,
 } from "../std/GameState.ts";
 import Button from "./Button.tsx";
+import Supply from "./Supply.tsx";
+import Player from "./Player.tsx";
 
 const NameField = (
   props: {
@@ -89,69 +89,10 @@ const Hall = (
         </li>
       ))}
     </ul>
-    <Button data-event-type="start">Start mesa</Button>
+    <Button onClick={() => props.clientGameFn.start(props.game)}>
+      Start mesa
+    </Button>
   </div>
-);
-
-const Supply = (props: { game: GameState }) => (
-  <div id="table-supply">
-    <h2 class={tw`mt-0`}>Supply</h2>
-    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {GameSel.getCoinsAndWins(props.game).map((c: GameCard) => (
-        <Card
-          card={c}
-          showQuantity
-          showBuy
-          canBuy={GameSel.playerCanBuy(props.game, c.id)}
-        />
-      ))}
-    </div>
-    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {GameSel.getActions(props.game).map((c: GameCard) => (
-        <Card
-          card={c}
-          showQuantity
-          showBuy
-          canBuy={GameSel.playerCanBuy(props.game, c.id)}
-        />
-      ))}
-    </div>
-  </div>
-);
-
-const Player = (props: { game: GameState }) => (
-  <div id="player-table">
-    <h2>In play</h2>
-    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {GameSel.getInPlay(props.game).map((c: GameCard) => (
-        <Card
-          card={c}
-        />
-      ))}
-    </div>
-    <h2>Discard</h2>
-    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {GameSel.getDiscard(props.game).map((c: GameCard) => (
-        <Card
-          card={c}
-        />
-      ))}
-    </div>
-    <h2>Hand</h2>
-    <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-      {GameSel.getHand(props.game).map((c: GameCard) => (
-        <Card card={c} showPlay />
-      ))}
-    </div>
-    <span>Deck: {GameSel.connectedPlayer(props.game).deck.length}</span>
-  </div>
-);
-
-const GameTable = (props: { game: GameState }) => (
-  <>
-    <Supply game={props.game} />
-    <Player game={props.game} />
-  </>
 );
 
 const Results = () => <span>You win</span>;
@@ -210,7 +151,12 @@ export const Table = (
             />
           )
           : props.game.status === GameStatus.PLAYING
-          ? <GameTable game={props.game} />
+          ? (
+            <>
+              <Supply game={props.game} />
+              <Player game={props.game} />
+            </>
+          )
           : <Results />}
       </div>
     </div>

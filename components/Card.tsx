@@ -24,7 +24,7 @@ export default function Card(
         <span
           class={tw
             `absolute border-white border-solid rounded-full bg-red-500 text-sm text-white font-bold p-2`}
-          style="width: 17px; top: -5px; right: -5px; text-align: center;"
+          style="top: -5px; right: -5px; text-align: center;"
         >
           {props.card.inSupply}
         </span>

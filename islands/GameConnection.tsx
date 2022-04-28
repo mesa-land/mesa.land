@@ -1,13 +1,9 @@
 /** @jsx h */
 import Body from "../components/Body.tsx";
+import { Table } from "../components/Table.tsx";
 import { h, IS_BROWSER, PageProps, useState } from "../deps.client.ts";
-import {
-  GameEvent,
-  GameFn,
-  GameFunction,
-  GameState,
-} from "../std/GameState.ts";
-import GameIsland from "./GameIsland.tsx";
+import { GameFn, GameFunction, GameState } from "../std/GameState.ts";
+import { logEvent, logGame } from "../utils/log.ts";
 
 declare global {
   interface Window {
@@ -52,19 +48,24 @@ function onWebSocketMessage(setState: (state: GameState) => void) {
   };
 }
 
-function createClientGameFn(ws: WebSocket): GameFunction {
+function createClientGameFn(ws: WebSocket, game: GameState): GameFunction {
   const clientGameFn: Record<string, Function> = {};
   for (const key in GameFn) {
     clientGameFn[key] = (...args: any[]) => {
-      ws.send(JSON.stringify({
+      const e = {
         GameFn: key as keyof GameFunction,
         // Remove GameState from args
         GameFnArgs: args.slice(1),
-      }));
+      };
+      logEvent(game, e);
+      ws.send(JSON.stringify(e));
     };
   }
   return clientGameFn as GameFunction;
 }
+
+// For server side rendering, GameFunction need not be available
+const noop = (() => {}) as unknown as GameFunction;
 
 export default function Connection(
   props: PageProps<GameState>,
@@ -72,18 +73,29 @@ export default function Connection(
   if (!IS_BROWSER) {
     return (
       <Body>
-        <GameIsland game={props.data} />
+        <Table
+          game={props.data}
+          playerId={props.data.connectedPlayerId || ""}
+          clientGameFn={noop}
+        />
       </Body>
     );
   }
 
   const [game, setState] = useState<GameState>(props.data);
   ws.onmessage = onWebSocketMessage(setState);
-  const clientGameFn = createClientGameFn(ws);
+  const clientGameFn = createClientGameFn(ws, game);
+
+  console.log("rendering game");
+  logGame(game);
 
   return (
     <Body>
-      <GameIsland game={game} clientGameFn={clientGameFn} />
+      <Table
+        game={game}
+        playerId={game.connectedPlayerId || ""}
+        clientGameFn={clientGameFn!}
+      />
     </Body>
   );
 }
