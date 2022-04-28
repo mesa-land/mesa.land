@@ -1,99 +1,16 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
 
-import { Fragment, h, tw, useState } from "../deps.client.ts";
+import { Fragment, h, tw } from "../deps.client.ts";
 import {
   GameFunction,
   GameSel,
   GameState,
   GameStatus,
 } from "../std/GameState.ts";
-import Button from "./Button.tsx";
 import Supply from "./Supply.tsx";
 import Player from "./Player.tsx";
-
-const NameField = (
-  props: {
-    game: GameState;
-    playerId: string;
-    editable?: boolean;
-    clientGameFn?: GameFunction;
-  },
-) => {
-  const name = GameSel.connectedPlayer(props.game).name;
-  const pId = GameSel.connectedPlayer(props.game).id;
-  const isEmpty = name === "";
-  const [nameInput, setNameInput] = useState(name);
-  return (
-    <div>
-      {props.editable
-        ? (
-          isEmpty
-            ? (
-              <div>
-                <input
-                  type="text"
-                  id="mesa-name"
-                  placeholder="Choose your name..."
-                  value={nameInput}
-                  onInput={(e) => {
-                    setNameInput(
-                      (e!.target as HTMLInputElement).value,
-                    );
-                  }}
-                  class={tw`m-2 p-1 text-black text-lg rounded-md shadow-md`}
-                />
-                <Button
-                  onClick={() =>
-                    props.clientGameFn!.rename(props.game, pId, nameInput)}
-                >
-                  Rename
-                </Button>
-              </div>
-            )
-            : (
-              <div>
-                {GameSel.connectedPlayer(props.game).name}
-                <Button>Edit</Button>
-              </div>
-            )
-        )
-        : (
-          <span>
-            {props.game.players[props.playerId].name ||
-              props.game.players[props.playerId].id}
-          </span>
-        )}
-    </div>
-  );
-};
-
-const Hall = (
-  props: { game: GameState; playerId: string; clientGameFn: GameFunction },
-) => (
-  <div id="waiting-hall">
-    <span>Players in this mesa:</span>
-    <ul class={tw`my-4`} style="padding-inline-start: 1em;">
-      {Object.keys(props.game.players).map((pId) => (
-        <li>
-          {pId === props.playerId
-            ? (
-              <NameField
-                game={props.game}
-                playerId={pId}
-                editable
-                clientGameFn={props.clientGameFn}
-              />
-            )
-            : <NameField game={props.game} playerId={pId} />}
-        </li>
-      ))}
-    </ul>
-    <Button onClick={() => props.clientGameFn.start(props.game)}>
-      Start mesa
-    </Button>
-  </div>
-);
+import Hall from "./Hall.tsx";
 
 const Results = () => <span>You win</span>;
 

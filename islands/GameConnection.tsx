@@ -34,7 +34,6 @@ function connect(gameId: string) {
 
 function onWebSocketMessage(setState: (state: GameState) => void) {
   return (e: MessageEvent) => {
-    console.log("ws:", e);
     const event: { game: GameState; playerId: string } = JSON
       .parse(e.data);
 
@@ -43,7 +42,7 @@ function onWebSocketMessage(setState: (state: GameState) => void) {
       window.mesa.playerId = event.playerId;
       document.cookie = `mesaPlayer=${event.playerId};path=/`;
     }
-
+    logGame(event.game);
     setState(event.game);
   };
 }
@@ -85,9 +84,6 @@ export default function Connection(
   const [game, setState] = useState<GameState>(props.data);
   ws.onmessage = onWebSocketMessage(setState);
   const clientGameFn = createClientGameFn(ws, game);
-
-  console.log("rendering game");
-  logGame(game);
 
   return (
     <Body>
