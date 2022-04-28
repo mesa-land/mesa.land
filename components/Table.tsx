@@ -10,7 +10,7 @@ import Button from "./Button.tsx";
 const NameField = (
   props: { game: GameState; playerId: string; editable?: boolean },
 ) => {
-  const isEditing = GameSel.currentPlayer(props.game).name === "";
+  const isEditing = GameSel.connectedPlayer(props.game).name === "";
   return (
     <div>
       {props.editable
@@ -22,7 +22,7 @@ const NameField = (
                   type="text"
                   id="mesa-name"
                   placeholder="Choose your name..."
-                  value={GameSel.currentPlayer(props.game).name}
+                  value={GameSel.connectedPlayer(props.game).name}
                   class={tw`m-2 p-1 text-lg rounded-md shadow-md`}
                 />
                 <Button data-event-type="rename">Rename</Button>
@@ -30,7 +30,7 @@ const NameField = (
             )
             : (
               <div>
-                {GameSel.currentPlayer(props.game).name}
+                {GameSel.connectedPlayer(props.game).name}
                 <Button>Edit</Button>
               </div>
             )
@@ -111,7 +111,7 @@ const Player = (props: { game: GameState }) => (
         <Card card={c} showPlay />
       ))}
     </div>
-    <span>Deck: {GameSel.currentPlayer(props.game).deck.length}</span>
+    <span>Deck: {GameSel.connectedPlayer(props.game).deck.length}</span>
   </div>
 );
 

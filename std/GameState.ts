@@ -65,6 +65,9 @@ export const GameSel = {
   currentPlayer(game: GameState): GamePlayer {
     return game.players[game.currentPlayerId!];
   },
+  connectedPlayer(game: GameState): GamePlayer {
+    return game.players[game.connectedPlayerId!];
+  },
   playerHasActionsInHand(game: GameState): boolean {
     return GameSel.currentPlayer(game).hand.some((h) =>
       game.supply[h].isAction
