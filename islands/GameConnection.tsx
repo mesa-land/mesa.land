@@ -20,9 +20,9 @@ if (IS_BROWSER) {
 }
 
 function connect(gameId: string) {
-  const address = location.host === "mesa.land"
-    ? `wss://mesa.land/ws/${gameId}`
-    : "ws://" + location.host + `/ws/${gameId}`;
+  const address = location.protocol === "https:"
+    ? `wss://${location.host}/ws/${gameId}`
+    : `ws://${location.host}/ws/${gameId}`;
   ws = new WebSocket(address);
 
   ws.onopen = () => {
