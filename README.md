@@ -49,3 +49,5 @@ adding, removing, or moving an island in the `islands` directory, run:
 ```
 fresh manifest
 ```
+
+.
