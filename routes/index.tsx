@@ -33,7 +33,7 @@ export default function Home() {
             Welcome to Mesa. Join our{"  "}
             <a
               href="https://discord.gg/7efW797Kfu"
-              class={tw`underline pointer`}
+              class={tw`underline cursor-pointer`}
             >
               Mesa discord server
             </a>{" "}

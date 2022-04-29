@@ -16,7 +16,7 @@ export const handler: Handlers = {
     }
 
     const cookies = getCookies(req.headers);
-    const playerId = cookies["mesaPlayer"];
+    const playerId = cookies["mesaPlayer"] || crypto.randomUUID();
     const { id: gameId } = ctx.params;
     const { socket: ws, response } = Deno.upgradeWebSocket(req);
 
