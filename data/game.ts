@@ -1,4 +1,5 @@
-import { createGame, GameState } from "../std/GameState.ts";
+import { createGame } from "../std/Game.ts";
+import { GameState } from "../std/GameState.ts";
 import alphaGameCards from "../x/alpha/mod.ts";
 
 const games = new Map<string, GameState>();

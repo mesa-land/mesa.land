@@ -50,4 +50,8 @@ adding, removing, or moving an island in the `islands` directory, run:
 fresh manifest
 ```
 
-.
+# To-do
+
+[] Extract state machine from GameFn
+
+[] Figure out connectedPlayerId vs playerId in websocket

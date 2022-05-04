@@ -1,19 +1,18 @@
 /** @jsx h */
 
 import { h, tw, useState } from "../deps.client.ts";
-import { GameFunction, GameSel, GameState } from "../std/GameState.ts";
+import { Game } from "../std/Game.ts";
 import Button from "./Button.tsx";
 
 export default function NameField(
   props: {
-    game: GameState;
+    game: Game;
     playerId: string;
     editable?: boolean;
-    clientGameFn?: GameFunction;
   },
 ) {
-  const name = GameSel.connectedPlayer(props.game).name;
-  const pId = GameSel.connectedPlayer(props.game).id;
+  const name = props.game.sel.connectedPlayer().name;
+  const pId = props.game.sel.connectedPlayer().id;
   const isEmpty = name === "";
   const [nameInput, setNameInput] = useState(name);
   return (
@@ -36,8 +35,7 @@ export default function NameField(
                   class={tw`m-2 p-1 text-black text-lg rounded-md shadow-md`}
                 />
                 <Button
-                  onClick={() =>
-                    props.clientGameFn!.rename(props.game, pId, nameInput)}
+                  onClick={() => props.game.fn.rename(pId, nameInput)}
                 >
                   Rename
                 </Button>
@@ -45,15 +43,15 @@ export default function NameField(
             )
             : (
               <div>
-                {GameSel.connectedPlayer(props.game).name}
+                {props.game.sel.connectedPlayer().name}
                 <Button>Edit</Button>
               </div>
             )
         )
         : (
           <span>
-            {props.game.players[props.playerId].name ||
-              props.game.players[props.playerId].id}
+            {props.game.state.players[props.playerId].name ||
+              props.game.state.players[props.playerId].id}
           </span>
         )}
     </div>

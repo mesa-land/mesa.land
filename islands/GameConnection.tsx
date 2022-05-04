@@ -2,7 +2,12 @@
 import Body from "../components/Body.tsx";
 import { Table } from "../components/Table.tsx";
 import { h, IS_BROWSER, PageProps, useState } from "../deps.client.ts";
-import { GameFn, GameFunction, GameState } from "../std/GameState.ts";
+import {
+  clientGameFunctions,
+  createGameSel,
+  GameFunction,
+  GameState,
+} from "../std/Game.ts";
 import { logEvent, logGame } from "../utils/log.ts";
 
 declare global {
@@ -39,7 +44,7 @@ function onWebSocketMessage(setState: (state: GameState) => void) {
 
     window.mesa.game = event.game;
     if (event.playerId) {
-      window.mesa.playerId = event.playerId;
+      window.mesa.playerId = event.game.connectedPlayerId;
       document.cookie = `mesaPlayer=${event.playerId};path=/`;
     }
     logGame(event.game);
@@ -47,24 +52,25 @@ function onWebSocketMessage(setState: (state: GameState) => void) {
   };
 }
 
-function createClientGameFn(ws: WebSocket, game: GameState): GameFunction {
-  const clientGameFn: Record<string, Function> = {};
-  for (const key in GameFn) {
-    clientGameFn[key] = (...args: any[]) => {
+function createClientGameFn(
+  ws: WebSocket,
+  game: GameState,
+) {
+  const fn: GameFunction = {} as any;
+  clientGameFunctions.forEach((key: string) => {
+    console.log(key);
+    fn[key as keyof GameFunction] = (...args: any[]): GameState => {
       const e = {
         GameFn: key as keyof GameFunction,
-        // Remove GameState from args
-        GameFnArgs: args.slice(1),
+        GameFnArgs: args,
       };
       logEvent(game, e);
       ws.send(JSON.stringify(e));
+      return game;
     };
-  }
-  return clientGameFn as GameFunction;
+  });
+  return fn;
 }
-
-// For server side rendering, GameFunction need not be available
-const noop = (() => {}) as unknown as GameFunction;
 
 export default function Connection(
   props: PageProps<GameState>,
@@ -73,9 +79,11 @@ export default function Connection(
     return (
       <Body>
         <Table
-          game={props.data}
-          playerId={props.data.connectedPlayerId || ""}
-          clientGameFn={noop}
+          game={{
+            state: props.data,
+            fn: null as any, // Never used in server
+            sel: createGameSel(props.data),
+          }}
         />
       </Body>
     );
@@ -83,14 +91,17 @@ export default function Connection(
 
   const [game, setState] = useState<GameState>(props.data);
   ws.onmessage = onWebSocketMessage(setState);
-  const clientGameFn = createClientGameFn(ws, game);
+  const fn = createClientGameFn(ws, game);
+  const sel = createGameSel(game);
 
   return (
     <Body>
       <Table
-        game={game}
-        playerId={game.connectedPlayerId || ""}
-        clientGameFn={clientGameFn!}
+        game={{
+          state: game,
+          fn,
+          sel,
+        }}
       />
     </Body>
   );
