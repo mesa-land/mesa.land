@@ -1,15 +1,10 @@
 /** @jsx h */
 
 import { h, tw } from "../deps.client.ts";
-import {
-  GameFunction,
-  GameSel,
-  GameState,
-  GameStatus,
-} from "../std/GameState.ts";
+import { Game, GameStatus } from "../std/Game.ts";
 
 export default function StatusBar(
-  props: { game: GameState; playerId: string; clientGameFn: GameFunction },
+  props: { game: Game },
 ) {
   return (
     <div
@@ -20,28 +15,28 @@ export default function StatusBar(
         mesa:{" "}
         <a
           class={tw`underline text-purple-500`}
-          href={"/m/" + props.game.id}
+          href={"/m/" + props.game.state.id}
         >
-          {props.game.id}
+          {props.game.state.id}
         </a>
-        {props.game.status === GameStatus.WAITING && (
-          <span class={tw`ml-2`}>({props.game.status})</span>
+        {props.game.state.status === GameStatus.WAITING && (
+          <span class={tw`ml-2`}>({props.game.state.status})</span>
         )}
       </span>
-      {props.game.status === GameStatus.PLAYING &&
+      {props.game.state.status === GameStatus.PLAYING &&
         (
           <span class={tw`ml-2`}>
             you may:{" "}
             <strong class={tw`uppercase text-purple-500`}>
-              {props.game.currentPlayerMoves.join(", ")}
+              {props.game.state.currentPlayerMoves.join(", ")}
             </strong>
           </span>
         )}
-      {props.game.currentPlayerId && (
+      {props.game.state.currentPlayerId && (
         <span class={tw`ml-2`}>
-          actions: {GameSel.currentPlayer(props.game).actions} buys:{" "}
-          {GameSel.currentPlayer(props.game).buys} coins:{" "}
-          {GameSel.playerCoins(props.game)}
+          actions: {props.game.sel.currentPlayer().actions} buys:{" "}
+          {props.game.sel.currentPlayer().buys} coins:{" "}
+          {props.game.sel.playerCoins()}
         </span>
       )}
     </div>
