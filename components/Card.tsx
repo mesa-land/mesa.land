@@ -18,9 +18,8 @@ export default function Card(
   return (
     <div
       class={tw
-        `relative bg-gray-200 p-3 mb-2 ml-0 mr-1 rounded-lg border-solid border-indigo-700 text-gray-800` +
-        " card-c"}
-      style="width: 130px; height: 200px;"
+        `relative bg-gray-200 p-3 mb-2 ml-0 mr-1 rounded-lg border-solid border-indigo-700 text-gray-800 flex flex-col justify-between`}
+      style="width: 130px; height: 180px;"
     >
       {props.showQuantity && (
         <span
@@ -35,25 +34,27 @@ export default function Card(
       {/* <img src={props.card.image} /> */}
       <p>{props.card.description}</p>
 
-      <br />
-      {props.showBuy && (
-        <Button
-          data-card-id={props.card.id}
-          disabled={!props.canBuy}
-          onClick={() => props.game.fn.buy(props.card.id)}
-        >
-          Buy: ${props.card.cost}
-        </Button>
-      )}
-      {props.showPlay && (props.card.isAction || props.card.coinValue !== 0) &&
-        (
+      <div class={tw`mh-100`}>
+        {props.showBuy && (
           <Button
             data-card-id={props.card.id}
-            onClick={() => props.game.fn.play(props.card.id)}
+            disabled={!props.canBuy}
+            onClick={() => props.game.fn.buy(props.card.id)}
           >
-            Play
+            Buy: ${props.card.cost}
           </Button>
         )}
+        {props.showPlay &&
+          (props.card.isAction || props.card.coinValue !== 0) &&
+          (
+            <Button
+              data-card-id={props.card.id}
+              onClick={() => props.game.fn.play(props.card.id)}
+            >
+              Play
+            </Button>
+          )}
+      </div>
     </div>
   );
 }

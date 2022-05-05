@@ -31,6 +31,10 @@ const autoplay = [
     GameFn: "rename",
     GameFnArgs: ["player1"],
   },
+  {
+    GameFn: "start",
+    GameFnArgs: [],
+  },
 ];
 
 function connect(gameId: string) {
@@ -42,6 +46,9 @@ function connect(gameId: string) {
   ws.onopen = () => {
     console.log("mesa: ws connected");
     if (autoplay) {
+      autoplay.forEach((e) => {
+        ws.send(JSON.stringify(e));
+      });
     }
   };
 
@@ -69,7 +76,6 @@ function createClientGameFn(
 ) {
   const fn: GameFunction = {} as any;
   clientGameFunctions.forEach((key: string) => {
-    console.log(key);
     fn[key as keyof GameFunction] = (...args: any[]): GameState => {
       const e = {
         GameFn: key as keyof GameFunction,

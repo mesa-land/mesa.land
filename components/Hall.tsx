@@ -10,7 +10,7 @@ export default function Hall(
   props: { game: Game },
 ) {
   const name = props.game.sel.connectedPlayer()?.name;
-  const pId = props.game.sel.connectedPlayer()?.id;
+  console.log("props.name", name);
   const [nameInput, setNameInput] = useState(name);
   console.log("nameInput", nameInput);
   const isEmpty = nameInput === "";

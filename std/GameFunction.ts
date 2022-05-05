@@ -1,4 +1,4 @@
-import { CardId, draw, shuffle } from "./GameCard.ts";
+import { CardId, draw, shuffle, sortHand } from "./GameCard.ts";
 import { createPlayer } from "./GamePlayer.ts";
 import { createGameSel, GameSelector } from "./GameSelector.ts";
 import { GameState, GameStatus, PlayerMove } from "./GameState.ts";
@@ -186,6 +186,7 @@ export const createGameFn = (
       game.turn++;
 
       p.hand = draw(5, p.deck);
+      sortHand(game.supply, p.hand);
       p.actions = 1;
       p.buys = 1;
 

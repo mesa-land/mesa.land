@@ -49,8 +49,8 @@ export function sortHand(
     }
     aUtility += cards[a].cost;
     bUtility += cards[b].cost;
-    aUtility -= cards[a].winValue;
-    bUtility -= cards[b].winValue;
+    aUtility -= cards[a].winValue * 10;
+    bUtility -= cards[b].winValue * 10;
 
     return aUtility - bUtility;
   });
