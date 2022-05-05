@@ -20,7 +20,7 @@ export default function Card(
       class={tw
         `relative bg-gray-200 p-3 mb-2 ml-0 mr-1 rounded-lg border-solid border-indigo-700 text-gray-800` +
         " card-c"}
-      style="width: 130px;"
+      style="width: 130px; height: 200px;"
     >
       {props.showQuantity && (
         <span

@@ -21,11 +21,11 @@ export const handler: Handlers = {
     const { id: gameId } = ctx.params;
     const { socket: ws, response } = Deno.upgradeWebSocket(req);
 
-    users.set(playerId, ws);
     let game = getGameById(gameId);
 
     // Join game when user connects
     ws.onopen = () => {
+      users.set(playerId, ws);
       console.log(`[${gameId}] ${playerId}: connected`);
       createGameFn(game).join(playerId);
       game.connectedPlayerId = playerId;
@@ -43,10 +43,10 @@ export const handler: Handlers = {
     ws.onmessage = (e: WSEvent) => {
       const mesaEvent = JSON.parse(e.data) as GameEvent;
       logEvent(game, mesaEvent);
+      game.connectedPlayerId = playerId;
       const fn = createGameFn(game);
       const transform = fn[mesaEvent.GameFn];
-      game = transform(mesaEvent.GameFnArgs[0], mesaEvent.GameFnArgs[1]);
-      game.connectedPlayerId = playerId;
+      game = transform(mesaEvent.GameFnArgs[0]);
       logGame(game);
       ws.send(JSON.stringify({ game }));
       // update state for other players too

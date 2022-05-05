@@ -38,7 +38,7 @@ export default function Hall(
             <span class={tw`ml-2`}>
               <Button
                 onClick={() =>
-                  props.game.fn.rename(pId, nameInput) && setEdit(false)}
+                  props.game.fn.rename(nameInput) && setEdit(false)}
               >
                 Rename
               </Button>

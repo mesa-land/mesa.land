@@ -111,6 +111,7 @@ export const createGameFn = (
       console.log("Gain card", cardId);
       player.discard.push(cardId);
       card.inSupply--;
+      fn.checkVictory();
       return game;
     },
     gainAction() {
@@ -201,8 +202,14 @@ export const createGameFn = (
       }
       return game;
     },
-    rename(playerId: string, name: string) {
-      game.players[playerId].name = name;
+    rename(name: string) {
+      sel.connectedPlayer().name = name;
+      return game;
+    },
+    checkVictory() {
+      if (game.supply["6w"].inSupply === 0) {
+        console.log("game end");
+      }
       return game;
     },
   };

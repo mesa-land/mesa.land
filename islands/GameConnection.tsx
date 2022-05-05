@@ -24,6 +24,15 @@ if (IS_BROWSER) {
   window.mesa.ws = ws;
 }
 
+// Autoplay these moves — for development and testing.
+// const autoplay = false;
+const autoplay = [
+  {
+    GameFn: "rename",
+    GameFnArgs: ["player1"],
+  },
+];
+
 function connect(gameId: string) {
   const address = location.protocol === "https:"
     ? `wss://${location.host}/ws/${gameId}`
@@ -32,6 +41,8 @@ function connect(gameId: string) {
 
   ws.onopen = () => {
     console.log("mesa: ws connected");
+    if (autoplay) {
+    }
   };
 
   return ws;
