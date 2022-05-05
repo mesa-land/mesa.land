@@ -23,7 +23,9 @@ export const Table = (
       <div
         class={tw`p-6 `}
       >
-        {props.game.state.status === GameStatus.WAITING
+        {!props.game.sel.connectedPlayer()
+          ? "connecting to your mesa..."
+          : props.game.state.status === GameStatus.WAITING
           ? <Hall game={props.game} />
           : props.game.state.status === GameStatus.PLAYING
           ? (

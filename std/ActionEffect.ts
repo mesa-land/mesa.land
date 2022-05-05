@@ -1,8 +1,16 @@
+import { PlayerId } from "./GamePlayer.ts";
+
+export type ActionCondition = {
+  GameSel: string;
+  GameSelArgs: Array<any>;
+  operator: "AND" | "OR";
+};
+
 export type ActionEffect = {
-  condition: string;
-  target: string;
-  effect: Array<{
+  target?: PlayerId;
+  effects: Array<{
     GameFn: string;
     GameFnArgs: any[];
+    conditions: Array<ActionCondition>;
   }>;
 };

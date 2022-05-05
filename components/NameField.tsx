@@ -32,13 +32,15 @@ export default function NameField(
                       (e!.target as HTMLInputElement).value,
                     );
                   }}
-                  class={tw`m-2 p-1 text-black text-lg rounded-md shadow-md`}
+                  class={tw`my-2 p-1 text-black text-lg rounded-md shadow-md`}
                 />
-                <Button
-                  onClick={() => props.game.fn.rename(pId, nameInput)}
-                >
-                  Rename
-                </Button>
+                <span class={tw`ml-2`}>
+                  <Button
+                    onClick={() => props.game.fn.rename(pId, nameInput)}
+                  >
+                    Rename
+                  </Button>
+                </span>
               </div>
             )
             : (

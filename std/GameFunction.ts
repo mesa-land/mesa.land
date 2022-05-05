@@ -99,6 +99,10 @@ export const createGameFn = (
       console.log("Draw card");
       const player = sel.currentPlayer();
       player.hand.push(player.deck.pop() as CardId);
+      if (player.deck.length === 0) {
+        player.deck = shuffle(player.discard);
+        player.discard = [];
+      }
       return game;
     },
     gainCard(cardId: CardId) {
@@ -106,7 +110,6 @@ export const createGameFn = (
       const card = game.supply[cardId];
       console.log("Gain card", cardId);
       player.discard.push(cardId);
-      player.hand.splice(player.hand.indexOf(cardId), 1);
       card.inSupply--;
       return game;
     },

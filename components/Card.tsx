@@ -34,16 +34,7 @@ export default function Card(
       <h3 class={tw`mt-0`}>{props.card.title}</h3>
       {/* <img src={props.card.image} /> */}
       <p>{props.card.description}</p>
-      <div>
-        {props.card.coinValue !== 0 && (
-          <span>Worth {props.card.coinValue} coin</span>
-        )}
-      </div>
-      <div>
-        {props.card.winValue !== 0 && (
-          <span>Worth {props.card.winValue} win</span>
-        )}
-      </div>
+
       <br />
       {props.showBuy && (
         <Button
