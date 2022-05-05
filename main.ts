@@ -9,4 +9,4 @@
 import { start } from "./deps.server.ts";
 import manifest from "./fresh.gen.ts";
 
-await start(manifest);
+await start(manifest, { hostname: "mesa.land.local" });

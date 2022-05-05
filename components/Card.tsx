@@ -48,8 +48,8 @@ export default function Card(
       {props.showBuy && (
         <Button
           data-card-id={props.card.id}
-          data-event-type="buy"
           disabled={!props.canBuy}
+          onClick={() => props.game.fn.buy(props.card.id)}
         >
           Buy: ${props.card.cost}
         </Button>

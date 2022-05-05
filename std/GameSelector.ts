@@ -1,6 +1,6 @@
 import { GameCard } from "./GameCard.ts";
 import { GamePlayer } from "./GamePlayer.ts";
-import { GameState } from "./GameState.ts";
+import { GameState, PlayerMove } from "./GameState.ts";
 
 // Game selectors. Filters and selects game state.
 export const createGameSel = (game: GameState) => {
@@ -15,11 +15,33 @@ export const createGameSel = (game: GameState) => {
       return sel.currentPlayer().hand.some((h) => game.supply[h].isAction);
     },
     playerCanBuy(cardId: string): boolean {
+      if (game.supply[cardId].inSupply === 0) {
+        return false;
+      }
+      if (!game.currentPlayerMoves.includes(PlayerMove.BUY)) {
+        return false;
+      }
       const card = game.supply[cardId];
       const player = sel.currentPlayer();
       const cost = card.cost;
       const coins = sel.playerCoins();
       return player.buys > 0 && cost <= coins;
+    },
+    playerCanPlay(cardId: string): boolean {
+      const card = game.supply[cardId];
+      if (
+        card.isAction &&
+        !game.currentPlayerMoves.includes(PlayerMove.PLAY_ACTION)
+      ) {
+        return false;
+      }
+      if (
+        card.coinValue > 0 &&
+        !game.currentPlayerMoves.includes(PlayerMove.PLAY_COIN)
+      ) {
+        return false;
+      }
+      return true;
     },
     nextPlayerId(): string {
       // This is absolutely not safe. And yet...

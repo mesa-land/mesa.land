@@ -23,7 +23,11 @@ export default function Player(props: { game: Game }) {
       <h2>Hand</h2>
       <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
         {props.game.sel.getHand().map((c: GameCard) => (
-          <Card card={c} showPlay game={props.game} />
+          <Card
+            card={c}
+            showPlay={props.game.sel.playerCanPlay(c.id)}
+            game={props.game}
+          />
         ))}
       </div>
       <span>Deck: {props.game.sel.connectedPlayer().deck.length}</span>
