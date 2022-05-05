@@ -1,3 +1,4 @@
+import { ActionCondition } from "./ActionEffect.ts";
 import { CardId, draw, shuffle, sortHand } from "./GameCard.ts";
 import { createPlayer } from "./GamePlayer.ts";
 import { createGameSel, GameSelector } from "./GameSelector.ts";
@@ -53,12 +54,45 @@ export const createGameFn = (
       game.inPlay.push(cardId);
       player.hand.splice(player.hand.indexOf(cardId), 1);
       const card = game.supply[cardId];
+
+      const checkConditions = (
+        conditions?: Array<ActionCondition>,
+        operator?: "AND" | "OR",
+      ) => {
+        if (!conditions) {
+          return true;
+        }
+        if (conditions && conditions.length > 0) {
+          let conditionResults: Array<boolean> = [];
+          conditions.forEach((condition) => {
+            const selector = sel[condition.GameSel as keyof GameSelector];
+            const result = selector(condition.GameSelArgs[0]);
+            conditionResults.push(!!result);
+          });
+          if (operator === "AND") {
+            return conditionResults.every((result) => result === true);
+          } else {
+            return conditionResults.some((result) => result === true);
+          }
+        }
+      };
+
       if (card.isAction) {
         if (!game.currentPlayerMoves.includes(PlayerMove.PLAY_ACTION)) {
           throw new Error("Player may not play actions now.");
         }
-        // TODO card.onPlay()
         console.log("Action played", card.title);
+        if (card.effects && card.effects.length > 0) {
+          card.effects.forEach((effect) => {
+            // Conditions are met, execute effect.
+            if (checkConditions(effect.conditions, effect.operator)) {
+              const transform = effect.GameFn as keyof GameFunction;
+              const arg = effect.GameFnArgs ? effect.GameFnArgs[0] : undefined;
+              console.log("Applied effect", effect.GameFn, arg);
+              fn[transform](arg);
+            }
+          });
+        }
         if (!sel.playerHasActionsInHand()) {
           // End action phase
           game.currentPlayerMoves = [

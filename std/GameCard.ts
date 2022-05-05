@@ -1,4 +1,5 @@
 import { ActionEffect } from "./ActionEffect.ts";
+import { PlayerId } from "./GamePlayer.ts";
 
 export type CardId = string;
 
@@ -12,6 +13,7 @@ export type GameCard = {
   cost: number;
   inSupply: number;
   description?: string;
+  target?: PlayerId;
   effects?: Array<ActionEffect>;
 };
 

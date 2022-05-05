@@ -21,7 +21,7 @@ export default function Player(props: { game: Game }) {
       </CardContainer>
       <div class={tw`flex flex-row justify-between`}>
         <CardContainer title="Hand">
-          <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+          <div class={tw`flex flex-row`}>
             {hand.map((c: GameCard) => (
               <Card
                 card={c}

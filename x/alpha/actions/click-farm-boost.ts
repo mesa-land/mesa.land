@@ -9,5 +9,8 @@ export const ClickFarmBoost: GameCard = {
   cost: 3,
   inSupply: 10,
   description: "+2 Actions",
-  effects: [],
+  effects: [
+    { GameFn: "gainAction" },
+    { GameFn: "gainAction" },
+  ],
 };

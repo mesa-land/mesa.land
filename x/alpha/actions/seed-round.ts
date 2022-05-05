@@ -9,5 +9,9 @@ export const SeedRound: GameCard = {
   cost: 4,
   inSupply: 10,
   description: "+2 Cards, +1 Action",
-  effects: [],
+  effects: [
+    { GameFn: "drawCard" },
+    { GameFn: "drawCard" },
+    { GameFn: "gainAction" },
+  ],
 };
