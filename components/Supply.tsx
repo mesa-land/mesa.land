@@ -36,6 +36,14 @@ export default function Supply(props: { game: Game }) {
           </div>
         </>
       </CardContainer>
+
+      <CardContainer title="In Play">
+        <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
+          {props.game.sel.getInPlay().map((c: GameCard) => (
+            <Card card={c} game={props.game} />
+          ))}
+        </div>
+      </CardContainer>
     </div>
   );
 }

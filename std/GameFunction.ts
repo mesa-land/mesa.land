@@ -137,6 +137,7 @@ export const createGameFn = (
         player.deck = shuffle(player.discard);
         player.discard = [];
       }
+      sortHand(game.supply, player.hand);
       return game;
     },
     gainCard(cardId: CardId) {

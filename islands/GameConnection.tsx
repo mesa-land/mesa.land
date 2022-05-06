@@ -25,17 +25,18 @@ if (IS_BROWSER) {
 }
 
 // Autoplay these moves — for development and testing.
-// const autoplay = false;
-const autoplay = [
-  {
-    GameFn: "rename",
-    GameFnArgs: ["player1"],
-  },
-  {
-    GameFn: "start",
-    GameFnArgs: [],
-  },
-];
+// TODO: only in dev
+const autoplay = false;
+// const autoplay = [
+//   {
+//     GameFn: "rename",
+//     GameFnArgs: ["player1"],
+//   },
+//   {
+//     GameFn: "start",
+//     GameFnArgs: [],
+//   },
+// ];
 
 function connect(gameId: string) {
   const address = location.protocol === "https:"
@@ -45,11 +46,11 @@ function connect(gameId: string) {
 
   ws.onopen = () => {
     console.log("mesa: ws connected");
-    if (autoplay) {
-      autoplay.forEach((e) => {
-        ws.send(JSON.stringify(e));
-      });
-    }
+    // if (autoplay) {
+    //   autoplay.forEach((e) => {
+    //     ws.send(JSON.stringify(e));
+    //   });
+    // }
   };
 
   return ws;

@@ -9,7 +9,7 @@ const Container = (props: { children: any }) => (
   <div
     class={tw
       `relative bg-gray-200 p-3 mb-2 ml-0 mr-1 rounded-lg border-solid border-1 border-indigo-700 text-gray-800 flex flex-col justify-between`}
-    style="width: 130px; height: 180px;"
+    style="width: 125px; height: 150px;"
   >
     {props.children}
   </div>

@@ -16,12 +16,10 @@ export const Table = (
   return (
     <div
       id="table-component"
-      class={tw
-        `flex-row rounded-lg text-white border-solid border-1 border-gray-400`}
+      class={tw`flex-row text-white `}
     >
-      <StatusBar game={props.game} />
       <div
-        class={tw`p-6 `}
+        class={tw`pt-2 `}
       >
         {!props.game.sel.connectedPlayer()
           ? "connecting to your mesa..."
@@ -31,6 +29,7 @@ export const Table = (
           ? (
             <>
               <Supply game={props.game} />
+              <StatusBar game={props.game} />
               <Player game={props.game} />
             </>
           )

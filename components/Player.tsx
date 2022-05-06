@@ -12,16 +12,9 @@ export default function Player(props: { game: Game }) {
   const discard = props.game.sel.getDiscard();
   return (
     <div id="player-table">
-      <CardContainer title="In Play">
-        <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-          {props.game.sel.getInPlay().map((c: GameCard) => (
-            <Card card={c} game={props.game} />
-          ))}
-        </div>
-      </CardContainer>
       <div class={tw`flex flex-row justify-between`}>
         <CardContainer title="Hand">
-          <div class={tw`flex flex-row`}>
+          <div class={tw`flex flex-row flex-wrap w-full`}>
             {hand.map((c: GameCard) => (
               <Card
                 card={c}

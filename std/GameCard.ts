@@ -44,15 +44,15 @@ export function sortHand(
     let aUtility = 0;
     let bUtility = 0;
     if (cards[a].isAction) {
-      aUtility += 10;
+      aUtility -= 10;
     }
     if (cards[b].isAction) {
-      bUtility += 10;
+      bUtility -= 10;
     }
-    aUtility += cards[a].cost;
-    bUtility += cards[b].cost;
-    aUtility -= cards[a].winValue * 10;
-    bUtility -= cards[b].winValue * 10;
+    aUtility -= cards[a].cost;
+    bUtility -= cards[b].cost;
+    aUtility += cards[a].winValue * 10;
+    bUtility += cards[b].winValue * 10;
 
     return aUtility - bUtility;
   });

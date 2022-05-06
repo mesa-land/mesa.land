@@ -9,7 +9,7 @@ export default function StatusBar(
   return (
     <div
       class={tw
-        `border-solid border-b border-x-0 border-t-0 border-gray-400 text-gray-400 p-2`}
+        `rounded-lg border-gray-400 border-1 border-dashed p-2 mb-2 mx-2`}
     >
       <span>
         mesa:{" "}
