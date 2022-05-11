@@ -13,7 +13,7 @@ export default function Supply(props: { game: Game }) {
       <CardContainer title="Supply">
         <>
           <div class={tw`flex flex-row flex-wrap justify-items-stretch`}>
-            {props.game.sel.getCoinsAndWins().map((c: GameCard) => (
+            {props.game.sel.getCoinsAndWinsAndFails().map((c: GameCard) => (
               <Card
                 card={c}
                 showQuantity

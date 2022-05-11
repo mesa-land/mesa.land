@@ -1,4 +1,4 @@
-import { GameCard } from "../../../std/GameCard.ts";
+import { GameCard } from "../../std/GameCard.ts";
 
 export const ClickFarmBoost: GameCard = {
   id: "cfa",

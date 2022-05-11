@@ -1,5 +1,7 @@
 /** @jsx h */
-import { h, PageProps } from "../../deps.client.ts";
+/** @jsxFrag Fragment */
+
+import { Fragment, h, Head, PageProps } from "../../deps.client.ts";
 import { Handlers } from "../../deps.server.ts";
 import GameConnection from "../../islands/GameConnection.tsx";
 import { getGameById } from "../../data/game.ts";
@@ -14,5 +16,24 @@ export const handler: Handlers<GameState> = {
 };
 
 export default function GameRoute(props: PageProps<GameState>) {
-  return <GameConnection {...props} />;
+  const autoplay = Deno.env.get("MESA_AUTOPLAY");
+  const windowMesa = JSON.stringify({ env: { MESA_AUTOPLAY: autoplay } });
+  return (
+    <>
+      <Head>
+        <title>
+          Mesa - playing mesa: {props.params.id}
+        </title>
+        <meta
+          name="description"
+          content={`Join the mesa: ${props.params.id}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{ __html: `window.mesa = ${windowMesa}` }}
+        >
+        </script>
+      </Head>
+      <GameConnection {...props} />;
+    </>
+  );
 }

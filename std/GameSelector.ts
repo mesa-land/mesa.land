@@ -52,9 +52,10 @@ export const createGameSel = (game: GameState) => {
       const i = playerIds.findIndex((pId) => pId === game.currentPlayerId);
       return playerIds[(i + 1) % playerIds.length];
     },
-    getCoinsAndWins(): Array<GameCard> {
+    getCoinsAndWinsAndFails(): Array<GameCard> {
       const coins: Array<GameCard> = [];
       const wins: Array<GameCard> = [];
+      const fails: Array<GameCard> = [];
 
       Object.keys(game.supply).forEach((cId) => {
         const c = game.supply[cId];
@@ -64,9 +65,12 @@ export const createGameSel = (game: GameState) => {
         if (c.winValue > 0 && !c.isAction) {
           wins.push(c);
         }
+        if (c.winValue < 0 && !c.isAction) {
+          fails.push(c);
+        }
       });
 
-      return coins.concat(wins);
+      return [...coins, ...wins, ...fails];
     },
     getActions(): Array<GameCard> {
       const actions: Array<GameCard> = [];

@@ -20,11 +20,11 @@ export default function Home() {
     <>
       <Head>
         <title>
-          Mesa - turn any NFT collection into a card game with one click.
+          Mesa - play with your NFTs.
         </title>
         <meta
           name="description"
-          content="Play infinite games for free. Turn any NFT collection into a card game with one click."
+          content="The card game you play with your own NFTs."
         />
       </Head>
       <Body>

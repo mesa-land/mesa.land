@@ -1,8 +1,6 @@
-import { CoinCard } from "./coin.ts";
-import { WinCard } from "./win.ts";
-import { ClickFarmBoost } from "./actions/click-farm-boost.ts";
-import { SeedRound } from "./actions/seed-round.ts";
-import { GameCard } from "../../std/GameCard.ts";
+import { ClickFarmBoost } from "./click-farm-boost.ts";
+import { SeedRound } from "./seed-round.ts";
+import { CoinCard, FailCard, GameCard, WinCard } from "../../std/GameCard.ts";
 
 const alphaCardList = [
   CoinCard(1),
@@ -11,6 +9,7 @@ const alphaCardList = [
   WinCard(1),
   WinCard(3),
   WinCard(6),
+  FailCard,
   ClickFarmBoost,
   SeedRound,
 ];

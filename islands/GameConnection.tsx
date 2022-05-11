@@ -9,6 +9,7 @@ import {
   GameState,
 } from "../std/Game.ts";
 import { logEvent, logGame } from "../utils/log.ts";
+import autoplay from "../utils/autoplay.ts";
 
 declare global {
   interface Window {
@@ -24,20 +25,6 @@ if (IS_BROWSER) {
   window.mesa.ws = ws;
 }
 
-// Autoplay these moves — for development and testing.
-// TODO: only in dev
-const autoplay = false;
-// const autoplay = [
-//   {
-//     GameFn: "rename",
-//     GameFnArgs: ["player1"],
-//   },
-//   {
-//     GameFn: "start",
-//     GameFnArgs: [],
-//   },
-// ];
-
 function connect(gameId: string) {
   const address = location.protocol === "https:"
     ? `wss://${location.host}/ws/${gameId}`
@@ -46,11 +33,15 @@ function connect(gameId: string) {
 
   ws.onopen = () => {
     console.log("mesa: ws connected");
-    // if (autoplay) {
-    //   autoplay.forEach((e) => {
-    //     ws.send(JSON.stringify(e));
-    //   });
-    // }
+    const auto = window.mesa.env.MESA_AUTOPLAY &&
+      autoplay[window.mesa.env.MESA_AUTOPLAY as keyof typeof autoplay];
+    if (auto) {
+      auto.forEach(
+        (e: any) => {
+          ws.send(JSON.stringify(e));
+        },
+      );
+    }
   };
 
   return ws;
