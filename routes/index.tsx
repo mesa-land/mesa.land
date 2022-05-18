@@ -5,15 +5,7 @@ import { Fragment, h, Head, tw } from "../deps.client.ts";
 import NavigationBar from "../components/NavigationBar.tsx";
 import Body from "../components/Body.tsx";
 import Footer from "../components/Footer.tsx";
-
-const Hero = () => (
-  <div className="hero">
-    <h1>Turn your NFT collections into amazing web card games.</h1>
-    <p>
-      Mesa is an online card game where your NFTs are the action cards.
-    </p>
-  </div>
-);
+import Button from "../components/Button.tsx";
 
 export default function Home() {
   return (
@@ -26,9 +18,31 @@ export default function Home() {
           name="description"
           content="The card game you play with your own NFTs."
         />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#212121" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#212121"></meta>
       </Head>
       <Body>
-        <div class={tw`text-center text-black p-2 bg-slate-200`}>
+        <div class={tw`text-center p-2 bg-gray-400`}>
           <p>
             Welcome to Mesa. Join our{"  "}
             <a
@@ -41,35 +55,37 @@ export default function Home() {
           </p>
         </div>
         <NavigationBar active="/" />
+
         <div class={tw`p-4 rounded-lg pt-6 mt-4 p-12 text-gray-200`}>
-          <Hero />
-          <div class={tw`text-lg`}>
-            <p>
-              Mesa is a community-driven, extensible card game that's created by
-              gamers, for gamers.
-            </p>
+          <div
+            class={tw`container w-full md:max-w-3xl mx-auto`}
+          >
+            <div class={tw`text-lg md:max-w-xl`}>
+              <h3 class={tw`text-5xl py-5`}>
+                The card game you play<br></br>
+                <span class={tw`text-8xl`}>
+                  with <em>your</em> NFTs!
+                </span>
+              </h3>
+              <p>
+                Connect your apes, zombies or whatever else floats your boat.
+              </p>
+              <p>
+                Mesa is an online card game where your NFTs are the action
+                cards.
+              </p>
+              <p>
+                Mesa is a fun, fast, and easy way to play with your NFTs.
+              </p>
+            </div>
 
-            <p>
-              Mesa is easy to learn, but the game possibilities are infinite
-              thanks to user-generated cards.
-            </p>
-
-            <h3 class={tw`text-5xl py-5`}>Start now</h3>
-            <p>
-              Play online now or create your own cards. Made a great card? Sell
-              it on the Market for fun and profit!
-            </p>
-          </div>
-
-          <div class={tw`w-full flex flex-row justify-center mt-8`}>
-            <a href="/m/alpha">
-              <button
-                class={tw
-                  `bg-purple-800 border-white border-opacity-50 rounded-lg p-4 text-white font-bold text-2xl `}
-              >
-                Play Alpha
-              </button>
-            </a>
+            <div class={tw`w-full flex flex-row justify-center mt-8`}>
+              <a href="/m/alpha">
+                <Button>
+                  Play Alpha
+                </Button>
+              </a>
+            </div>
           </div>
         </div>
         <Footer />

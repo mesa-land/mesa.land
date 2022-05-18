@@ -55,3 +55,8 @@ fresh manifest
 [] Extract state machine from GameFn
 
 [] Figure out connectedPlayerId vs playerId in websocket
+
+# Colors
+
+#212121\
+#03FFFF

@@ -12,7 +12,7 @@ export default function RoundedButton(
       {...rest}
       disabled={disabled ? true : undefined}
       class={tw
-        `text-lg bg-purple-800 rounded-md px-4 py-1 text-white shadow-md ` +
+        `text-lg bg-blue-400 text-gray-400 rounded-md px-4 py-1 shadow-md ` +
         (props.disabled ? disabledClass : "")}
     >
       {props.children}

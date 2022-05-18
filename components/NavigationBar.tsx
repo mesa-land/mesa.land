@@ -21,7 +21,7 @@ export default function NavigationBar(props: { active: string }) {
   return (
     <nav
       class={tw
-        `antialiased text-slate-200 font-sans bg-black bg-gradient-to-b from-indigo-900 to-black min-h-full py-2 border(t-2 b-2 gray-100)`}
+        `antialiased text-slate-200 font-sans bg-gray-400 to-black min-h-full py-2 border(t-1 b-1 gray-300)`}
     >
       <ul class={tw`flex justify-center gap-8 mx-4`}>
         {items.map((item) => (
